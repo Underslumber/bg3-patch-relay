@@ -14,6 +14,14 @@
 ./scripts/build-lslib.ps1              # собрать PatchRelay.pak в корне репозитория
 ./scripts/build-lslib.ps1 -Install     # плюс скопировать в %LOCALAPPDATA%\Larian Studios\Baldur's Gate 3\Mods
 ./scripts/build-lslib.ps1 -Divine C:\path\to\Divine.exe   # явный путь к упаковщику
+./scripts/build-lslib.ps1 -VersionTag v1.2.0              # версия сборки из тега
+./scripts/build-lslib.ps1 -VersionTag v1.2.0 -WriteMeta   # и записать её в meta.lsx репозитория
+
+./scripts/link-bg3-dev-folders.ps1     # подключить репозиторий к игре симлинками (для Toolkit)
+./scripts/unlink-bg3-dev-folders.ps1   # снять подключение
+
+python scripts/sync-parent-meta.py --check   # сверить Dependencies с meta.lsx патчируемого мода
+python scripts/sync-parent-meta.py           # и обновить
 ```
 
 Имя скрипта называет тип сборки: `build-<инструмент>.ps1`. Сейчас есть только `build-lslib.ps1` (Divine.exe из LSLib, игра для него не нужна); сборка официальным Toolkit от Larian, когда до неё дойдут руки, станет отдельным `build-toolkit.ps1` рядом, а не флагом внутри существующего — у способов разные требования к окружению и разный результат.
@@ -22,12 +30,18 @@
 
 Пакуются только `Mods/` и `Public/` — остальные файлы репозитория в `.pak` не попадают. Скриптам место в `scripts/`, а не в корне: корень остаётся под игровые ветки и документацию.
 
+`-VersionTag` разбирает тег `vX.Y.Z` в `ModuleInfo/Version64` — упакованный `int64` вида `major<<55 | minor<<47 | revision<<31 | build`. По умолчанию версия подставляется только в сборку, а `meta.lsx` в репозитории не меняется: сборка из тега воспроизводима, но версия в git не уезжает незаметно. Записать её в репозиторий — явным `-WriteMeta`. Divine изредка молча выдаёт обрубок вместо пакета, поэтому сборка отбрасывает результат меньше килобайта и повторяет с другого корня.
+
+`link-bg3-dev-folders.ps1` заводит симлинки из репозитория в `Data\` игры — так Toolkit видит мод как свой проект, а правки идут по-прежнему в репозиторий. `Mods` и `Public` обязательны, `Editor\Mods` и `Projects` линкуются, только когда появятся: до заведения мода в тулките их просто нет. Игра находится через реестр Steam и `libraryfolders.vdf`; нужны права на симлинки (режим разработчика Windows). Помнить, что мод из `Data\Mods` игра берёт из репозитория, а не из установленного `.pak`, — две копии одновременно смысла не имеют.
+
 ## Структура
 
 ```
 Mods/PatchRelay_146ee64d-…/meta.lsx                       идентичность мода + Dependencies
 Public/PatchRelay_146ee64d-…/Stats/Generated/Data/*.txt   собственно патчи
 scripts/build-lslib.ps1                                   сборка .pak через LSLib + установка в игру
+scripts/link-bg3-dev-folders.ps1                          симлинки в Data/ игры для Toolkit (+ unlink-)
+scripts/sync-parent-meta.py                               Dependencies в meta.lsx по мете патчируемого мода
 PATCHES.md                                                реестр: что, где, зачем, на какой версии
 ```
 
@@ -64,6 +78,8 @@ data "Boosts" "…"
 Откуда брать оригинал записи — записано в шапке раздела мода в `PATCHES.md`: там ссылка на репозиторий исходников, путь к локальной копии и зеркальный путь внутри неё. Для единственного пока патчируемого мода, DnD 5.5e All-in-One BEYOND, это `../bg3dnd` (форк [Underslumber/bg3dnd](https://github.com/Underslumber/bg3dnd), апстрим [Yoonmoonsik/bg3dnd](https://github.com/Yoonmoonsik/bg3dnd)), путь `Public/DnD2024_…/Stats/Generated/Data/`. Найденную запись сравнивать с колонкой «Базис».
 
 Совпало — патч жив. Изменилось — патч переписывается под новую версию, а не остаётся как есть.
+
+Заодно сверяется строка зависимости: `python scripts/sync-parent-meta.py --check` читает `meta.lsx` патчируемого мода из локальной копии (или с GitHub по `--parent-url`) и показывает расхождения в `Dependencies`; без `--check` он их применяет. Нужный блок ищется по UUID родителя, поэтому прочие `ModuleShortDesc` не задеваются. Обновлённая версия зависимости означает, что и «Версия на момент патча» в `PATCHES.md` устарела — эти две записи ходят парой.
 
 ## Язык
 
