@@ -74,22 +74,10 @@ if ($WriteMeta -and -not $VersionTag) {
     throw '-WriteMeta работает только вместе с -VersionTag.'
 }
 
-$staging = Join-Path ([System.IO.Path]::GetTempPath()) "patchrelay-build"
-if (Test-Path $staging) { Remove-Item $staging -Recurse -Force }
-New-Item -ItemType Directory $staging | Out-Null
-
-foreach ($branch in 'Mods', 'Public') {
-    $src = Join-Path $repo "$branch\$modFolder"
-    if (-not (Test-Path $src)) { throw "Нет ветки $branch\$modFolder" }
-    $dstBranch = Join-Path $staging $branch
-    New-Item -ItemType Directory $dstBranch | Out-Null
-    Copy-Item $src $dstBranch -Recurse
-}
-
 $metaPath = Join-Path $repo "Mods\$modFolder\meta.lsx"
+$version64 = [int64]0
 if ($VersionTag) {
     $version64 = ConvertTo-Version64 -Tag $VersionTag
-    Set-ModuleInfoVersion64 -MetaPath (Join-Path $staging "Mods\$modFolder\meta.lsx") -Version64 $version64
     if ($WriteMeta) { Set-ModuleInfoVersion64 -MetaPath $metaPath -Version64 $version64 }
     Write-Host "Версия: $VersionTag → $(ConvertFrom-Version64 $version64) (Version64 $version64)"
 } else {
@@ -98,30 +86,62 @@ if ($VersionTag) {
     }
 }
 
+# Пакуется всегда staging — копия только Mods/ и Public/, поэтому документация,
+# скрипты и прежний .pak в игру не уезжают.
+function New-Staging {
+    param([string]$Path)
+
+    if (Test-Path $Path) { Remove-Item $Path -Recurse -Force }
+    New-Item -ItemType Directory $Path | Out-Null
+
+    foreach ($branch in 'Mods', 'Public') {
+        $src = Join-Path $repo "$branch\$modFolder"
+        if (-not (Test-Path $src)) { throw "Нет ветки $branch\$modFolder" }
+        $dstBranch = Join-Path $Path $branch
+        New-Item -ItemType Directory $dstBranch | Out-Null
+        Copy-Item $src $dstBranch -Recurse
+    }
+
+    if ($script:version64) {
+        Set-ModuleInfoVersion64 -MetaPath (Join-Path $Path "Mods\$modFolder\meta.lsx") -Version64 $script:version64
+    }
+}
+
 # Divine иногда выдаёт обрубок в полсотни байт вместо пакета — молча, с нулевым кодом возврата.
-# Лечится повтором с другим корнем; результат принимаем только если он похож на настоящий .pak.
+# Лечится повтором с другого корня, поэтому staging готовится дважды: во временном каталоге
+# и рядом с репозиторием, на его диске. Результат принимаем только если он похож на настоящий .pak.
+# Каталог staging не начинается с точки: из пути с таким сегментом Divine не берёт ни одного
+# файла и молча отдаёт пустой пакет в 48 байт — проверено на '.build-staging'.
 # Имя пакета — как у Toolkit (<Folder>.pak): под разными именами обе сборки
 # лежали бы в папке модов одновременно, и игра грузила бы мод дважды.
+$stagingRoots = @(
+    (Join-Path ([System.IO.Path]::GetTempPath()) 'patchrelay-build')
+    (Join-Path $repo 'build-staging')
+)
 $pak = Join-Path $repo "$modFolder.pak"
 $tempPak = Join-Path ([System.IO.Path]::GetTempPath()) "$modFolder.pak"
 $packed = $false
 
-foreach ($source in $staging, $repo) {
+foreach ($staging in $stagingRoots) {
+    New-Staging -Path $staging
     if (Test-Path $tempPak) { Remove-Item $tempPak -Force }
 
-    & $Divine -g bg3 -a create-package -s $source -d $tempPak
+    & $Divine -g bg3 -a create-package -s $staging -d $tempPak
+
+    $failure = $null
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Divine вернул $LASTEXITCODE на корне $source"
-        continue
-    }
-    if (-not (Test-Path $tempPak)) {
-        Write-Host "Пакет не создан на корне $source"
-        continue
+        $failure = "Divine вернул $LASTEXITCODE"
+    } elseif (-not (Test-Path $tempPak)) {
+        $failure = 'пакет не создан'
+    } else {
+        $size = (Get-Item $tempPak).Length
+        if ($size -lt 1024) { $failure = "пакет подозрительно мал ($size Б)" }
     }
 
-    $size = (Get-Item $tempPak).Length
-    if ($size -lt 1024) {
-        Write-Host "Пакет на корне $source подозрительно мал ($size Б) — повтор с другим корнем"
+    Remove-Item $staging -Recurse -Force
+
+    if ($failure) {
+        Write-Host "Корень $staging : $failure"
         continue
     }
 
@@ -132,7 +152,6 @@ foreach ($source in $staging, $repo) {
 if (-not $packed) { throw 'Divine не собрал годный пакет ни с одного корня.' }
 
 Move-Item $tempPak $pak -Force
-Remove-Item $staging -Recurse -Force
 Write-Host "Собрано (LSLib): $pak ($((Get-Item $pak).Length) Б)"
 
 if ($Install) {

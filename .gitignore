@@ -1,2 +1,3 @@
 *.pak
 *.pak.bak-*
+build-staging/
