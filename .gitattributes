@@ -4,6 +4,7 @@
 *.txt   text eol=crlf
 *.stats text eol=crlf
 *.lsx   text eol=lf
+*.md    text eol=lf
 
 *.lsf   binary
 *.pak   binary
