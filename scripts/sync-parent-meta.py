@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import argparse
 import re
-import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -105,7 +104,7 @@ def update_block(block: str, values: dict[str, str]) -> tuple[str, list[str]]:
 
         new_value = quoteattr(values[field])
         if match.group(2) != new_value:
-            changed.append(f"{field}: {match.group(2)} → {new_value}")
+            changed.append(f"{field}: {match.group(2)} -> {new_value}")
             block = pattern.sub(lambda m: m.group(1) + new_value + m.group(3), block, count=1)
     return block, changed
 
