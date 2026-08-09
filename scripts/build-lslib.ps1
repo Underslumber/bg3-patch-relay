@@ -100,8 +100,10 @@ if ($VersionTag) {
 
 # Divine иногда выдаёт обрубок в полсотни байт вместо пакета — молча, с нулевым кодом возврата.
 # Лечится повтором с другим корнем; результат принимаем только если он похож на настоящий .pak.
-$pak = Join-Path $repo 'PatchRelay.pak'
-$tempPak = Join-Path ([System.IO.Path]::GetTempPath()) 'PatchRelay.pak'
+# Имя пакета — как у Toolkit (<Folder>.pak): под разными именами обе сборки
+# лежали бы в папке модов одновременно, и игра грузила бы мод дважды.
+$pak = Join-Path $repo "$modFolder.pak"
+$tempPak = Join-Path ([System.IO.Path]::GetTempPath()) "$modFolder.pak"
 $packed = $false
 
 foreach ($source in $staging, $repo) {
@@ -137,7 +139,7 @@ if ($Install) {
     if (Get-Process -Name 'bg3', 'bg3_dx11' -ErrorAction SilentlyContinue) {
         throw 'Игра запущена — закройте её перед установкой.'
     }
-    $target = Join-Path $GameModsDir 'PatchRelay.pak'
+    $target = Join-Path $GameModsDir "$modFolder.pak"
     if (Test-Path $target) {
         $backup = "$target.bak-$(Get-Date -Format yyyyMMdd-HHmmss)"
         Move-Item $target $backup

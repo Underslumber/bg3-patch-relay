@@ -1,0 +1,10 @@
+# Окончания строк здесь диктуют инструменты, а не git: Toolkit пишет .lsx с LF,
+# стат-файлы приходят из апстрима с CRLF. Без явных правил core.autocrlf=true
+# переписывает и те и другие, и каждая публикация даёт diff во весь файл.
+*.txt   text eol=crlf
+*.stats text eol=crlf
+*.lsx   text eol=lf
+
+*.lsf   binary
+*.pak   binary
+*.png   binary
