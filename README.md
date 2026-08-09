@@ -21,4 +21,4 @@
 
 | Мод | Что это | Ресурсы |
 |---|---|---|
-| [DnD 5.5e All-in-One BEYOND](docs/patched-mods.md#dnd-55e-all-in-one-beyond) | Перевод BG3 на правила D&D 2024 (5.5e): классы, подклассы, черты, заклинания, предыстории и базовые правила | [mod.io](https://mod.io/g/baldursgate3/m/bg3dnd) · [GitHub — апстрим](https://github.com/Yoonmoonsik/bg3dnd) · [GitHub — форк](https://github.com/Underslumber/bg3dnd) |
+| [DnD 5.5e All-in-One BEYOND](https://mod.io/g/baldursgate3/m/bg3dnd) | Перевод BG3 на правила D&D 2024 (5.5e): классы, подклассы, черты, заклинания, предыстории и базовые правила | [карточка](docs/patched-mods.md#dnd-55e-all-in-one-beyond) · [исходники](https://github.com/Yoonmoonsik/bg3dnd) · [форк](https://github.com/Underslumber/bg3dnd) |
