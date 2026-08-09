@@ -20,7 +20,7 @@
                 <node id="ModuleInfo">
                     <attribute id="Author" type="LSString" value="Underslumber"/>
                     <attribute id="CharacterCreationLevelName" type="FixedString" value=""/>
-                    <attribute id="Description" type="LSString" value="Private patch layer over other mods. Loads last and overrides individual stat entries; see PATCHES.md for what is patched and why."/>
+                    <attribute id="Description" type="LSString" value="Private patch layer over other mods. Loads last, overrides individual stat entries, and applies targeted runtime fixes; see PATCHES.md for details."/>
                     <attribute id="FileSize" type="uint64" value="2085"/>
                     <attribute id="Folder" type="LSString" value="PatchRelay_146ee64d-4202-44ea-bd9a-87fbcc4aa36e"/>
                     <attribute id="LobbyLevelName" type="FixedString" value=""/>
