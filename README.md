@@ -18,6 +18,7 @@
 |:---|:---|:---|
 | 🗡️ [`BLADESONG` — лестница КД](docs/patches/dnd55e-bladesong.md) | 📦 [DnD 5.5e All-in-One BEYOND](#затронутые-моды) | 💡 Бонус Песни клинка продлён с потолка +7 до +10 к 30 Интеллекта; семь слагаемых свёрнуты в одну строку тултипа |
 | ⚔️ [Оружие договора вне слота](docs/patches/dnd55e-pact-weapon.md) | 📦 [DnD 5.5e All-in-One BEYOND](#затронутые-моды) | 💡 Привязка пакта переживает перенос оружия в инвентарь: Lua-обработчик возвращает снятые статусы `PACT_BLADE*` |
+| 🎲 [Пустой тессеракт капсулы](docs/patches/ancient-mega-pack-void-capsule.md) | 📦 [Ancient Mega Pack](#затронутые-моды) | 💡 Зависшая цепочка `SeedReset` завершается штатной выдачей награды, а оставшийся служебный тессеракт удаляется |
 
 ### 🗑️ Снятые
 
@@ -30,3 +31,4 @@
 | Мод | Что это | Ресурсы |
 |:---|:---|:---|
 | 🎲 [DnD 5.5e All-in-One BEYOND](https://mod.io/g/baldursgate3/m/bg3dnd) | 📖 Перевод BG3 на правила D&D 2024 (5.5e): классы, подклассы, черты, заклинания, предыстории и базовые правила | 🔗 [карточка](docs/patched-mods.md#dnd-55e-all-in-one-beyond) · 📂 [исходники](https://github.com/Yoonmoonsik/bg3dnd) · 🍴 [форк](https://github.com/Underslumber/bg3dnd) |
+| 🏺 [Ancient Mega Pack](https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel) | 🎁 Большой набор предметов, случайной добычи и капсул Пустоты | 🔗 [карточка](docs/patched-mods.md#ancient-mega-pack) · 📦 [страница и сборка](https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel) · 📂 распакованная локальная копия |

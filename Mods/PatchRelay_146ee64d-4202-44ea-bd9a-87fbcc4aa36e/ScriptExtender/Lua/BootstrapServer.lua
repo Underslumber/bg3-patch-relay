@@ -4,6 +4,9 @@ local NULL_GUID = "00000000-0000-0000-0000-000000000000"
 local REAPPLY_DELAY_MS = 300
 local VERIFY_DELAY_MS = 300
 local FINAL_REMOVAL_DELAY_MS = REAPPLY_DELAY_MS + VERIFY_DELAY_MS + 200
+local VOID_CAPSULE_WATCHDOG_DELAY_MS = 1500
+local VOID_CAPSULE_DECOY_DELETE_DELAY_MS = 2000
+local voidCapsuleDecoys = {}
 local companionStatuses = {
     PACT_BLADE_NECROTIC = true,
     PACT_BLADE_PSYCHIC = true,
@@ -270,4 +273,69 @@ Ext.Events.SessionLoaded:Subscribe(function ()
     end
 end)
 
+local function hasRows(rows)
+    return rows ~= nil and next(rows) ~= nil
+end
+
+local function getDeferredCapsuleRows(owner, context, template, capsule)
+    return Osi.DB_AMP_VoidCapsule_DeferredSpawn:Get(
+        nil, owner, context, template, capsule)
+end
+
+-- SeedReset в Ancient Mega Pack использует один глобальный флаг Spawning.
+-- Запоминаем только контейнеры, созданные пока исходная выдача всё ещё
+-- числится отложенной: настоящий контейнер создаётся уже после удаления
+-- DeferredSpawn и сюда не попадает.
+Ext.Osiris.RegisterListener("AddedTo", 3, "after", function (item, inventoryHolder)
+    local template = Osi.GetTemplate(item)
+    if template == nil then
+        return
+    end
+
+    local rows = Osi.DB_AMP_VoidCapsule_DeferredSpawn:Get(
+        nil, inventoryHolder, nil, template, nil)
+    if not hasRows(rows) then
+        return
+    end
+
+    voidCapsuleDecoys[item] = true
+    Ext.Timer.WaitFor(VOID_CAPSULE_DECOY_DELETE_DELAY_MS, function ()
+        if not voidCapsuleDecoys[item] then
+            return
+        end
+
+        voidCapsuleDecoys[item] = nil
+        if Osi.Exists(item) == 1 then
+            Osi.RequestDelete(item)
+            Ext.Utils.Print(string.format(
+                "[Patch Relay] Removed stuck Void Capsule decoy=%s template=%s owner=%s",
+                tostring(item), tostring(template), tostring(inventoryHolder)))
+        end
+    end)
+end)
+
+-- Нормальная цепочка успевает удалить DeferredSpawn синхронно. Сохранившаяся
+-- спустя полторы секунды запись — проверяемый признак незавершённой выдачи:
+-- монета и заряд уже потрачены, а настоящий контейнер ещё не создан. Очищаем
+-- только состояние этой пары владелец+шаблон и вызываем штатный Done: он сам
+-- удалит tag/deferred-записи и создаст настоящую награду.
+Ext.Osiris.RegisterListener(
+    "PROC_AMP_VoidCapsule_SpawnReward", 4, "after",
+    function (owner, context, template, capsule)
+        Ext.Timer.WaitFor(VOID_CAPSULE_WATCHDOG_DELAY_MS, function ()
+            local rows = getDeferredCapsuleRows(owner, context, template, capsule)
+            if not hasRows(rows) then
+                return
+            end
+
+            Osi.DB_AMP_SeedReset_Active:Delete(owner, template, nil)
+            Osi.DB_AMP_SeedReset_Spawning:Delete(1)
+            Osi.PROC_AMP_SeedReset_Done(owner, template)
+            Ext.Utils.Print(string.format(
+                "[Patch Relay] Recovered stuck Void Capsule reward owner=%s context=%s template=%s capsule=%s",
+                tostring(owner), tostring(context), tostring(template), tostring(capsule)))
+        end)
+    end)
+
 Ext.Utils.Print("[Patch Relay] Pact weapon effect handler loaded")
+Ext.Utils.Print("[Patch Relay] Void Capsule SeedReset watchdog loaded")
