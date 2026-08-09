@@ -55,14 +55,15 @@ python scripts/sync-parent-meta.py           # и обновить
 ```
 Mods/PatchRelay_146ee64d-…/meta.lsx                       идентичность мода + Dependencies
 Mods/PatchRelay_146ee64d-…/GUI/metadata.lsf               метаданные Toolkit
+Mods/PatchRelay_146ee64d-…/ScriptExtender/Config.json     требования Script Extender
+Mods/PatchRelay_146ee64d-…/ScriptExtender/Lua/*.lua       серверные обработчики
 Editor/Mods/PatchRelay_146ee64d-…/                        редакторские исходники статов (пока пусто)
 Projects/PatchRelay_146ee64d-…/meta.lsx                   проект Toolkit: Module, Name, UUID проекта
 Public/PatchRelay_146ee64d-…/Stats/Generated/Data/*.txt   собственно патчи
 scripts/build-lslib.ps1                                   сборка .pak через LSLib + установка в игру
 scripts/link-bg3-dev-folders.ps1                          симлинки в Data/ игры для Toolkit (+ unlink-)
 scripts/sync-parent-meta.py                               Dependencies в meta.lsx по мете патчируемого мода
-Mods/PatchRelay_146ee64d-…/ScriptExtender/Config.json    требования Script Extender
-Mods/PatchRelay_146ee64d-…/ScriptExtender/Lua/*.lua      серверные обработчики
+docs/cover.png                                            обложка для README, в пакет не идёт
 PATCHES.md                                                реестр: что, где, зачем, на какой версии
 ```
 
