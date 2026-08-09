@@ -152,7 +152,7 @@ def main() -> int:
 
     args.target_path.write_text(updated_raw, encoding="utf-8", newline="")
     print(f"Обновлено: {args.target_path}")
-    print("Не забудьте про PATCHES.md: версия родителя в реестре тоже устарела.")
+    print("Не забудьте про docs/patches/: версия родителя в описаниях патчей тоже устарела.")
     return 0
 
 
