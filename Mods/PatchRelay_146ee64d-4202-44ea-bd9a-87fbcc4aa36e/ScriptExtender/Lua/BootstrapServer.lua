@@ -1,4 +1,5 @@
 local MODULE_UUID = "146ee64d-4202-44ea-bd9a-87fbcc4aa36e"
+Ext.Require("CapsulePoolExpansion.lua")
 local VAR_NAME = "Bindings"
 local NULL_GUID = "00000000-0000-0000-0000-000000000000"
 local REAPPLY_DELAY_MS = 300
