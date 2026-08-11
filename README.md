@@ -6,6 +6,8 @@
 
 Страница мода: [BG3 Underslumber — Patch Relay на mod.io](https://mod.io/g/baldursgate3/m/bg3-underslumber-patch-relay).
 
+Публикация GitHub Release на mod.io выполняется [отдельным workflow через официальный BG3 Toolkit](docs/modio-publishing.md); исходником всегда служит этот репозиторий целиком, включая `Mods/` и `Public/`.
+
 В статах BG3 побеждает последняя загруженная запись, поэтому мод обязан стоять **ниже** всех патчируемых модов в порядке загрузки.
 
 ***
