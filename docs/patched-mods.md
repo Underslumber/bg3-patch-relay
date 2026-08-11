@@ -26,4 +26,4 @@
 | Страница мода | https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel |
 | Исходники | Публичный репозиторий не указан; базис берётся из распакованного установленного `.pak` |
 | Локальная копия | `D:/Projects/BG3_Mods/work/ancient_current/` |
-| Где искать оригинал записи | `Mods/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Story/RawFiles/Goals/ZZ_AMP_VoidCapsule_*.txt` |
+| Где искать оригинал записи | Капсулы: `Mods/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Story/RawFiles/Goals/ZZ_AMP_VoidCapsule_*.txt`; предметы: `Public/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Stats/Generated/Data/` — путь зеркалит наш |

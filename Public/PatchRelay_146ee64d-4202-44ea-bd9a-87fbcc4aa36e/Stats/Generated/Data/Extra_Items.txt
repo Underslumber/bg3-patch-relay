@@ -1,0 +1,5 @@
+// Very Rare Hat of Eternal Echo: match the x1.5 description.
+new entry "AMP_Bladesinger_Helmet_3_Passive"
+type "PassiveData"
+using "AMP_Bladesinger_Helmet_3_Passive"
+data "StatsFunctors" "DealDamage((IntelligenceModifier*3)/2,Slashing,Magical,,0,,true,false)"
