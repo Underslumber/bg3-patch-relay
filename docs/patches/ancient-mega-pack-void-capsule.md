@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Мод | [Ancient Mega Pack](../../README.md#затронутые-моды) |
+| Мод | [Ancient Mega Pack](../../README.md#-затронутые-моды) |
 | Версия на момент патча | 22.74.1.2 (`Version64` `803048110702985218`) |
 | Файлы в Patch Relay | `Mods/…/ScriptExtender/Config.json`, `Mods/…/ScriptExtender/Lua/BootstrapServer.lua`, `CapsulePoolExpansion.lua`, `CapsulePoolBaseItems.lua` |
 | Файлы в чужом моде | `ZZ_AMP_VoidCapsule_Core.txt`, `ZZ_AMP_VoidCapsule_Reroll.txt`, `ZZ_AMP_VoidCapsule_SeedReset.txt`, `TreasureTable.txt` |

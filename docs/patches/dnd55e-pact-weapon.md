@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Мод | [DnD 5.5e All-in-One BEYOND](../../README.md#затронутые-моды) |
+| Мод | [DnD 5.5e All-in-One BEYOND](../../README.md#-затронутые-моды) |
 | Версия на момент патча | 4.11.22.2 (`main` @ `81a394a4`, 09.08.2026) |
 | Файлы в Patch Relay | `Mods/…/ScriptExtender/Config.json`, `Mods/…/ScriptExtender/Lua/BootstrapServer.lua` |
 | Файл в чужом моде | `dnd5.5e_Remove_PactOfBlade.txt` |

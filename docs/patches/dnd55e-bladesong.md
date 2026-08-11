@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Мод | [DnD 5.5e All-in-One BEYOND](../../README.md#затронутые-моды) |
+| Мод | [DnD 5.5e All-in-One BEYOND](../../README.md#-затронутые-моды) |
 | Версия на момент патча | 4.11.22.2 (`main` @ `81a394a4`, 09.08.2026) |
 | Файл в Patch Relay | `Public/…/Stats/Generated/Data/Status_BOOST.txt` |
 | Файл в чужом моде | `Public/…/Stats/Generated/Data/Status_BOOST.txt` |
