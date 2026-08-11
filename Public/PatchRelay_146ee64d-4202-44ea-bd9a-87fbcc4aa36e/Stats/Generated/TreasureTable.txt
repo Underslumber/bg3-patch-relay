@@ -1,3 +1,14 @@
+// Patch Relay additions to Ancient Mega Pack's native capsule pools.
+new treasuretable "REL_Legendary_Amulets"
+CanMerge 1
+new subtable "-1"
+object category "I_PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary",1,0,0,0,0,0,0,0
+
+new treasuretable "REL_All_Legendary"
+CanMerge 1
+new subtable "-1"
+object category "I_PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary",1,0,0,0,0,0,0,0
+
 // Generated from Ancient Mega Pack capsule pools.
 // Each static table preserves the original TreasureCategory tier processing.
 

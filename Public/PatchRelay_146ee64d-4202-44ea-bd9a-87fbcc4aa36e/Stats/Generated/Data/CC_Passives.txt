@@ -1,0 +1,15 @@
+// Fade's Equipment Distribution AIO: passives for the separate legendary pendant.
+new entry "PR_CC_AugmentedDefense_Legendary_Passive"
+type "PassiveData"
+using "CC_AugmentedDefense_Passive"
+data "DisplayName" "h312da51db4c945e8a713e6afda61e931;1"
+data "Description" "h01b374ff53d64a05baf1aaf4d352c51c;1"
+data "Boosts" "IF(ConditionResult(context.Source.Charisma == 12) or ConditionResult(context.Source.Charisma == 13)):AC(1);IF(ConditionResult(context.Source.Charisma == 14) or ConditionResult(context.Source.Charisma == 15)):AC(2);IF(ConditionResult(context.Source.Charisma == 16) or ConditionResult(context.Source.Charisma == 17)):AC(3);IF(ConditionResult(context.Source.Charisma >= 18)):AC(4);Attribute(Grounded);StatusImmunity(SG_Prone);StatusImmunity(PRONE);StatusImmunity(PRONE_FALLEN);StatusImmunity(PRONE_GREASE);StatusImmunity(PRONE_ICE);StatusImmunity(PRONE_SEWER);StatusImmunity(PRONE_THUNDEROUS_SMITE)"
+
+new entry "PR_CC_AugmentedRetaliation_Legendary_Passive"
+type "PassiveData"
+using "CC_AugmentedRetaliation_Passive"
+data "DisplayName" "h70a2e3bec2fa4d3c82c0307df6ca1190;1"
+data "Description" "h262ebddbac4a47368ae609bf91c82478;1"
+data "DescriptionParams" "DealDamage(CharismaModifier,Force)"
+data "StatsFunctors" "DealDamage(SWAP,CharismaModifier,Force,Magical)"

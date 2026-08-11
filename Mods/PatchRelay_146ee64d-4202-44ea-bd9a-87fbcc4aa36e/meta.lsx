@@ -23,6 +23,14 @@
                             <attribute id="UUID" type="guid" value="c6c0d2bd-6198-de9e-30ad-e8cda1793025"/>
                             <attribute id="Version64" type="int64" value="803048110702985218"/>
                         </node>
+                        <node id="ModuleShortDesc">
+                            <attribute id="Folder" type="LSString" value="xFED_AIO_af330e86-7335-b20c-ce70-6df8539d4597"/>
+                            <attribute id="MD5" type="LSString" value="f5b80df71cb7ef94c80882e8441ba95d"/>
+                            <attribute id="Name" type="LSString" value="Fade&apos;s Equipment Distribution AIO"/>
+                            <attribute id="PublishHandle" type="uint64" value="4918115"/>
+                            <attribute id="UUID" type="guid" value="af330e86-7335-b20c-ce70-6df8539d4597"/>
+                            <attribute id="Version64" type="int64" value="36028797018963988"/>
+                        </node>
                     </children>
                 </node>
                 <node id="ModuleInfo">
@@ -40,7 +48,7 @@
                     <attribute id="PublishHandle" type="uint64" value="6294995"/>
                     <attribute id="StartupLevelName" type="FixedString" value=""/>
                     <attribute id="UUID" type="FixedString" value="146ee64d-4202-44ea-bd9a-87fbcc4aa36e"/>
-                    <attribute id="Version64" type="int64" value="36028797018963970"/>
+                    <attribute id="Version64" type="int64" value="36028900098179072"/>
                     <children>
                         <node id="PublishVersion">
                             <attribute id="Version64" type="int64" value="36028797018963968"/>

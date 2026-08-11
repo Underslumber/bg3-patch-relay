@@ -2,7 +2,7 @@
 
 # 🛡️ BG3 Underslumber — Patch Relay
 
-Приватный слой патчей поверх чужих модов Baldur's Gate 3. Мод ничего не добавляет от себя: он переопределяет отдельные записи в статах и добавляет точечные обработчики Script Extender там, где переопределения не хватает.
+Приватный слой патчей поверх чужих модов Baldur's Gate 3. Обычно он переопределяет отдельные записи в статах и добавляет точечные обработчики Script Extender; собственные варианты предметов заводятся только как явно документированные продолжения исходных записей.
 
 Страница мода: [BG3 Underslumber — Patch Relay на mod.io](https://mod.io/g/baldursgate3/m/bg3-underslumber-patch-relay).
 
@@ -20,6 +20,7 @@
 | ⚔️ [Оружие договора вне слота](docs/patches/dnd55e-pact-weapon.md) | 📦 [DnD 5.5e All-in-One BEYOND](#затронутые-моды) | 💡 Привязка пакта переживает перенос оружия в инвентарь: Lua-обработчик возвращает снятые статусы `PACT_BLADE*` |
 | 🎲 [Капсулы Пустоты: награда и расширенные пулы](docs/patches/ancient-mega-pack-void-capsule.md) | 📦 [Ancient Mega Pack](#затронутые-моды) | 💡 Исправляет пустую награду и автоматически дополняет штатные пулы снаряжением активных модов по редкости, слоту и тематике |
 | 🎩 [«Вечное эхо» очень редкой шляпы](docs/patches/ancient-mega-pack-eternal-echo.md) | 📦 [Ancient Mega Pack](#затронутые-моды) | 💡 Исправляет фактический дополнительный урон с ×1 до заявленных ×1,5 модификатора Интеллекта |
+| 💠 [Две версии «Кулона древнего усиления»](docs/patches/xfed-arcane-augmentation-pendant.md) | 📦 [Fade's Equipment Distribution AIO](#затронутые-моды) | 💡 Исправляет русские описания очень редкой версии и добавляет отдельное легендарное завершение в мировую добычу xFED и легендарные капсулы |
 
 ### 🗑️ Снятые
 
@@ -33,3 +34,4 @@
 |:---|:---|:---|
 | 🎲 [DnD 5.5e All-in-One BEYOND](https://mod.io/g/baldursgate3/m/bg3dnd) | 📖 Перевод BG3 на правила D&D 2024 (5.5e): классы, подклассы, черты, заклинания, предыстории и базовые правила | 🔗 [карточка](docs/patched-mods.md#dnd-55e-all-in-one-beyond) · 📂 [исходники](https://github.com/Yoonmoonsik/bg3dnd) · 🍴 [форк](https://github.com/Underslumber/bg3dnd) |
 | 🏺 [Ancient Mega Pack](https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel) | 🎁 Большой набор предметов, случайной добычи и капсул Пустоты | 🔗 [карточка](docs/patched-mods.md#ancient-mega-pack) · 📦 [страница и сборка](https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel) · 📂 распакованная локальная копия |
+| 💠 [Fade's Equipment Distribution AIO](https://mod.io/g/baldursgate3/m/fades-equipment-distribution-aio) | 🧰 Распределение по миру комплектов снаряжения для классов | 🔗 [карточка](docs/patched-mods.md#fades-equipment-distribution-aio) · 📦 [страница и сборка](https://mod.io/g/baldursgate3/m/fades-equipment-distribution-aio) · 📂 распакованная локальная копия |

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<save>
+	<version major="4" minor="0" revision="9" build="328" lslib_meta="v1,bswap_guids" />
+	<region id="Templates">
+		<node id="Templates">
+			<children>
+				<node id="GameObjects">
+					<attribute id="Description" type="TranslatedString" handle="hc0d620020312453da1ee1bef4908e415" version="1" />
+					<attribute id="DisplayName" type="TranslatedString" handle="h08a78aaa22bf40f9bdcfcce45e8cd4c7" version="1" />
+					<attribute id="Icon" type="FixedString" value="ArcaneAugmentationPendant_Icon" />
+					<attribute id="LevelName" type="FixedString" value="" />
+					<attribute id="MapKey" type="FixedString" value="8b08e722-c75b-43d2-a83c-a04e6543cf7e" />
+					<attribute id="Name" type="LSString" value="PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary" />
+					<attribute id="ParentTemplateId" type="FixedString" value="a117bf60-4623-485d-8fd8-a2d2273fea00" />
+					<attribute id="Stats" type="FixedString" value="PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary" />
+					<attribute id="Type" type="FixedString" value="item" />
+					<attribute id="_OriginalFileVersion_" type="int64" value="144115188075855912" />
+					<children>
+						<node id="GameMaster" />
+					</children>
+				</node>
+			</children>
+		</node>
+	</region>
+</save>

@@ -508,6 +508,30 @@ local function rowCount(rows)
     return count
 end
 
+local LEGENDARY_PENDANT_STATS =
+    "PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary"
+local LEGENDARY_PENDANT_TEMPLATE = "8b08e722-c75b-43d2-a83c-a04e6543cf7e"
+
+local function ensureLegendaryPendantInXfedPool()
+    local succeeded, err = pcall(function ()
+        if rowCount(Osi.DB_FED_ItemRarity:Get(LEGENDARY_PENDANT_STATS, "Legendary")) == 0 then
+            Osi.DB_FED_ItemRarity(LEGENDARY_PENDANT_STATS, "Legendary")
+        end
+        if rowCount(Osi.DB_FED_Legendary_Pool:Get(LEGENDARY_PENDANT_TEMPLATE)) == 0 then
+            Osi.DB_FED_Legendary_Pool(LEGENDARY_PENDANT_TEMPLATE)
+        end
+    end)
+
+    if succeeded then
+        Ext.Utils.Print("[Patch Relay] Registered legendary Pendant of Arcane Augmentation in xFED pools")
+    else
+        Ext.Utils.PrintError("[Patch Relay] Failed to register legendary Pendant of Arcane Augmentation: "
+            .. tostring(err))
+    end
+end
+
+Ext.Events.SessionLoaded:Subscribe(ensureLegendaryPendantInXfedPool)
+
 local function traceVoidCapsule(message)
     local line = string.format("[%s] %s", Ext.Timer.ClockTime(), message)
     table.insert(voidCapsuleTraceLines, line)

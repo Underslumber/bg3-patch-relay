@@ -1,0 +1,8 @@
+// Fade's Equipment Distribution AIO: separate legendary Pendant of Arcane Augmentation.
+new entry "PR_CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation_Legendary"
+type "Armor"
+using "CC_Sorcerer_Equipment_Pendant_of_Arcane_Augmentation"
+data "RootTemplate" "8b08e722-c75b-43d2-a83c-a04e6543cf7e"
+data "Rarity" "Legendary"
+data "PassivesOnEquip" "PR_CC_AugmentedDefense_Legendary_Passive;PR_CC_AugmentedRetaliation_Legendary_Passive"
+data "ComboCategory" "d4"

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b012" version="1">Пока вы не носите броню, вы добавляете половину своего &lt;LSTag Tooltip="Charisma"&gt;модификатора Харизмы&lt;/LSTag&gt; (с округлением вниз) к &lt;LSTag Tooltip="ArmourClass"&gt;классу брони&lt;/LSTag&gt;, но не более +3.</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b016" version="1">Если существо попадает по вам атакой ближнего боя, оно получает [1]. (Раз в ход.)</content>
+  <content contentuid="h312da51db4c945e8a713e6afda61e931" version="1">Древняя защита</content>
+  <content contentuid="h01b374ff53d64a05baf1aaf4d352c51c" version="1">Пока вы не носите броню, вы добавляете свой &lt;LSTag Tooltip="Charisma"&gt;модификатор Харизмы&lt;/LSTag&gt; к &lt;LSTag Tooltip="ArmourClass"&gt;классу брони&lt;/LSTag&gt;, но не более +4. Кроме того, вас нельзя &lt;LSTag Type="Status" Tooltip="PRONE"&gt;сбить с ног&lt;/LSTag&gt; или принудительно переместить заклинаниями и действиями противника.</content>
+  <content contentuid="h70a2e3bec2fa4d3c82c0307df6ca1190" version="1">Древнее возмездие</content>
+  <content contentuid="h262ebddbac4a47368ae609bf91c82478" version="1">Если существо попадает по вам атакой ближнего боя, оно получает [1]. (Раз в ход.)</content>
+</contentList>
