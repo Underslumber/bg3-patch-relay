@@ -13,6 +13,11 @@ on:
         description: Release tag in vX.Y.Z format
         required: true
         default: v1.0.48
+      validate_only:
+        description: Check the runner and authenticated Patch Relay session without publishing
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -23,17 +28,18 @@ concurrency:
 
 jobs:
   publish:
-    runs-on: [self-hosted, Windows, X64, bg3-toolkit]
-    timeout-minutes: 35
+    environment: Mod.io
+    runs-on: [self-hosted, Windows, X64, patch-relay-toolkit]
+    timeout-minutes: 40
 
     defaults:
       run:
-        shell: pwsh
+        shell: powershell
 
     env:
-      BG3TOOL_PATH: ${{ vars.BG3TOOL_PATH }}
-      MODIO_ACCESS_TOKEN: ${{ secrets.MODIO_ACCESS_TOKEN }}
-      MODIO_API_BASE: ${{ vars.MODIO_API_BASE }}
+      BG3TOOL_PATH: C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3 Toolkit\Glasses.exe
+      MODIO_PUBLISHER_PATH: C:\ProgramData\BG3Modio\Publish-Modio-Toolkit.ps1
+      MODIO_CDP_NODE: C:\actions-runner-patchrelay\externals\node20\bin\node.exe
 
     steps:
       - name: Resolve release inputs
@@ -53,9 +59,10 @@ jobs:
           if ($tag -notmatch '^v(?<major>\d+)\.(?<minor>\d+)\.(?<revision>\d+)$') {
               throw "Version tag '$tag' must match vX.Y.Z."
           }
-          "ref=$ref" >> $env:GITHUB_OUTPUT
-          "tag=$tag" >> $env:GITHUB_OUTPUT
-          "module_version=$($Matches.major).$($Matches.minor).$($Matches.revision).0" >> $env:GITHUB_OUTPUT
+          "ref=$ref" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "module_version=$($Matches.major).$($Matches.minor).$($Matches.revision).0" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "version_prefix=$($Matches.major).$($Matches.minor).$($Matches.revision)." | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Checkout Patch Relay
         uses: actions/checkout@v4
@@ -63,66 +70,63 @@ jobs:
           ref: ${{ steps.release.outputs.ref }}
           fetch-depth: 0
 
-      - name: Checkout verified Toolkit publisher
-        uses: actions/checkout@v4
-        with:
-          repository: Underslumber/bg3-dnd55e-russian-localization
-          ref: main
-          path: .publisher
-          sparse-checkout: scripts
-          sparse-checkout-cone-mode: true
-
-      - name: Connect complete project to BG3 Toolkit
+      - name: Validate dedicated VM infrastructure
         run: |
           $ErrorActionPreference = 'Stop'
-          & .\scripts\link-bg3-dev-folders.ps1 -Workspace $env:GITHUB_WORKSPACE
+          foreach ($path in $env:BG3TOOL_PATH, $env:MODIO_PUBLISHER_PATH, $env:MODIO_CDP_NODE) {
+              if (-not (Test-Path -LiteralPath $path)) {
+                  throw "Required VM component was not found: $path"
+              }
+          }
+          & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs check `
+            --slug bg3-underslumber-patch-relay `
+            --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-check.json')
+          if ($LASTEXITCODE -ne 0) { throw "Patch Relay browser session check failed: $LASTEXITCODE" }
+
+      - name: Capture current mod.io files
+        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        id: baseline
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ids = & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs snapshot `
+            --slug bg3-underslumber-patch-relay
+          if ($LASTEXITCODE -ne 0) { throw "Could not capture the mod.io baseline: $LASTEXITCODE" }
+          "file_ids=$ids" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Connect checkout to BG3 Toolkit
+        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & .\scripts\stage-toolkit-project.ps1 -Workspace $env:GITHUB_WORKSPACE
 
       - name: Publish through official Toolkit
-        id: toolkit
+        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $toolkit = $env:BG3TOOL_PATH
-          if (-not $toolkit) {
-              $toolkit = 'C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3 Toolkit\Glasses.exe'
-          }
-          if (-not (Test-Path -LiteralPath $toolkit)) {
-              throw "BG3 Toolkit was not found: $toolkit"
-          }
           $diagnostics = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-publish.log'
-          $uploadedAfter = Get-Date
-          "uploaded_after=$($uploadedAfter.ToString('o'))" >> $env:GITHUB_OUTPUT
-
-          & .\.publisher\scripts\publish-modio-ui.ps1 `
-            -Bg3ToolPath $toolkit `
+          $project = 'C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data\Projects\PatchRelay_146ee64d-4202-44ea-bd9a-87fbcc4aa36e'
+          & $env:MODIO_PUBLISHER_PATH `
+            -Bg3ToolPath $env:BG3TOOL_PATH `
             -ProjectName 'PatchRelay' `
-            -ProjectPath (Join-Path $env:GITHUB_WORKSPACE 'Projects\PatchRelay_146ee64d-4202-44ea-bd9a-87fbcc4aa36e') `
+            -ProjectPath $project `
             -ModuleVersion '${{ steps.release.outputs.module_version }}' `
-            -ModioApiBase $(if ($env:MODIO_API_BASE) { $env:MODIO_API_BASE } else { 'https://g-6715.modapi.io/v1' }) `
-            -ModioGameId 6715 `
-            -ModioModId 6294995 `
-            -ModioAccessToken $env:MODIO_ACCESS_TOKEN `
             -TimeoutSeconds 900 `
-            -DiagnosticPath $diagnostics
+            -DiagnosticPath $diagnostics `
+            -ModioGameId 6715
+          if ($LASTEXITCODE -ne 0) { throw "BG3 Toolkit publication failed: $LASTEXITCODE" }
 
-      - name: Finalize mod.io file
+      - name: Finalize new file on mod.io
+        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
         run: |
           $ErrorActionPreference = 'Stop'
-          if (-not $env:MODIO_ACCESS_TOKEN) {
-              throw 'MODIO_ACCESS_TOKEN is unavailable to bg3-patch-relay; Toolkit uploaded the file but automatic finalization cannot continue.'
-          }
-          $apiBase = if ($env:MODIO_API_BASE) { $env:MODIO_API_BASE } else { 'https://g-6715.modapi.io/v1' }
           $result = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-result.json'
-          & .\.publisher\scripts\finalize-modio-file.ps1 `
-            -ApiBase $apiBase `
-            -GameId 6715 `
-            -ModId 6294995 `
-            -AccessToken $env:MODIO_ACCESS_TOKEN `
-            -ExpectedVersion '${{ steps.release.outputs.module_version }}' `
-            -UploadedAfter ([datetime]'${{ steps.toolkit.outputs.uploaded_after }}') `
-            -Platforms @('windows') `
-            -TimeoutSeconds 900 `
-            -ResultPath $result `
-            -SuppressManualEnableRequest
+          & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs publish `
+            --slug bg3-underslumber-patch-relay `
+            --expected-version-prefix '${{ steps.release.outputs.version_prefix }}' `
+            --baseline-file-ids '${{ steps.baseline.outputs.file_ids }}' `
+            --timeout-seconds 900 `
+            --result $result
+          if ($LASTEXITCODE -ne 0) { throw "mod.io finalization failed: $LASTEXITCODE" }
 
       - name: Upload publication diagnostics
         if: always()
@@ -131,6 +135,7 @@ jobs:
           name: patch-relay-modio-${{ steps.release.outputs.tag }}
           if-no-files-found: ignore
           path: |
+            ${{ runner.temp }}/patch-relay-modio-check.json
             ${{ runner.temp }}/patch-relay-modio-publish.log
             ${{ runner.temp }}/patch-relay-modio-result.json
             ${{ runner.temp }}/bg3-toolkit-publish-diagnostics/**
