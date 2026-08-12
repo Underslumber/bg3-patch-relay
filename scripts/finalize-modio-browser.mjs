@@ -171,6 +171,10 @@ async function check() {
         reactLabelProps: Object.entries(input.closest('label') ?? {})
           .filter(([key]) => key.startsWith('__reactProps'))
           .flatMap(([, value]) => Object.keys(value ?? {})),
+        inputOwnKeys: Object.keys(input),
+        inputVueEvents: Object.keys(input._vei ?? {}),
+        labelOwnKeys: Object.keys(input.closest('label') ?? {}),
+        labelVueEvents: Object.keys(input.closest('label')?._vei ?? {}),
       })),
       buttons: [...document.querySelectorAll('button')].map((button) => ({
         text: button.innerText.trim(),
