@@ -113,7 +113,7 @@ jobs:
             -TimeoutSeconds 900 `
             -DiagnosticPath $diagnostics `
             -ModioGameId 6715
-          if ($LASTEXITCODE -ne 0) { throw "BG3 Toolkit publication failed: $LASTEXITCODE" }
+          if (-not $?) { throw 'BG3 Toolkit publication failed.' }
 
       - name: Finalize new file on mod.io
         if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
