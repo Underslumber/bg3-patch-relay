@@ -96,6 +96,22 @@ async function replaceFocusedText(value) {
   await cdp(page, 'Input.insertText', { text: value });
 }
 
+async function typeFocusedText(value) {
+  const page = await findPage();
+  if (!page) fail('В CDP не найдена вкладка браузера.');
+  const shortcut = { key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, nativeVirtualKeyCode: 65, modifiers: 2 };
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...shortcut });
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...shortcut });
+  for (const character of value) {
+    await cdp(page, 'Input.dispatchKeyEvent', {
+      type: 'char', text: character, unmodifiedText: character,
+    });
+  }
+  const tab = { key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 };
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...tab });
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...tab });
+}
+
 async function clickAt(x, y) {
   const page = await findPage();
   if (!page) fail('В CDP не найдена вкладка браузера.');
@@ -243,7 +259,7 @@ async function syncProfile() {
     return document.activeElement === summaryInput;
   })()`);
   if (!summaryFocused) fail('Не удалось сфокусировать Summary.');
-  await replaceFocusedText(summary);
+  await typeFocusedText(summary);
 
   const editorFocused = await evaluate(`(() => {
     const editor = globalThis.tinymce?.activeEditor;
