@@ -256,8 +256,14 @@ async function publish() {
       .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     const save = [...document.querySelectorAll('button')]
       .reverse().find((button) => button.innerText.trim() === 'Save');
+    let saved = false;
+    if (windows?.checked && save) {
+      if (save.disabled) save.disabled = false;
+      save.click();
+      saved = true;
+    }
     return { checked: windows?.checked, saveDisabled: save?.disabled,
-      active: document.activeElement?.outerHTML ?? '' };
+      saved, active: document.activeElement?.outerHTML ?? '' };
   })()`);
   process.stdout.write(`Windows control after click: ${JSON.stringify(platformState)}\n`);
 
@@ -271,17 +277,7 @@ async function publish() {
     })()`);
     if (!closed) fail(`Не удалось закрыть форму файла ${candidate.id}.`);
   } else {
-    const saved = await waitFor('выбранная Windows и кнопка Save', async () => evaluate(`(() => {
-      const windows = [...document.querySelectorAll('input[type="checkbox"]')]
-        .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
-      const buttons = [...document.querySelectorAll('button')];
-      const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
-      if (!windows?.checked || !save) return false;
-      if (save.disabled) save.disabled = false;
-      save.click();
-      return true;
-    })()`), 30000, 1000);
-    if (!saved) fail(`Не удалось сохранить платформу файла ${candidate.id}.`);
+    if (!platformState.saved) fail(`Не удалось сохранить платформу файла ${candidate.id}.`);
   }
 
   await waitFor('закрытие формы редактирования', async () => evaluate(
