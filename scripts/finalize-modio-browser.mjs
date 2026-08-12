@@ -132,7 +132,7 @@ async function snapshot() {
 async function check() {
   await openAdmin();
   const rows = await readRows();
-  await writeResult({ ok: true, adminUrl, fileCount: rows.length });
+  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows });
 }
 
 async function closeAdmin() {
