@@ -154,6 +154,7 @@ async function check() {
         name: input.name,
         value: input.value,
         html: input.outerHTML,
+        labelHtml: input.closest('label')?.outerHTML ?? '',
         context: input.closest('label')?.innerText.trim()
           ?? input.parentElement?.parentElement?.innerText.trim()
           ?? '',
