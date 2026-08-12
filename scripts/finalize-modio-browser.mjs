@@ -236,8 +236,12 @@ async function publish() {
     const windows = checkboxes.find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     if (!windows) return { ok: false, reason: 'Windows checkbox not found' };
     const alreadySelected = windows.checked;
-    const rect = windows.closest('label').querySelector('span').getBoundingClientRect();
-    return { ok: true, alreadySelected, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    const visual = windows.closest('label').querySelector('span');
+    if (!alreadySelected) visual.scrollIntoView({ block: 'center', inline: 'center' });
+    const rect = visual.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
   if (!platformResult.alreadySelected) await clickPoint(platformResult.x, platformResult.y);
