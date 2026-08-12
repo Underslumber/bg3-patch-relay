@@ -73,12 +73,11 @@ async function navigate(url) {
   await sleep(3000);
 }
 
-async function pressSpace() {
+async function clickPoint(x, y) {
   const page = await findPage();
   if (!page) fail('В CDP не найдена вкладка браузера.');
-  const key = { key: ' ', code: 'Space', windowsVirtualKeyCode: 32, nativeVirtualKeyCode: 32 };
-  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...key });
-  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...key });
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
 }
 
 async function waitFor(description, probe, timeout = timeoutSeconds * 1000, interval = 3000) {
@@ -225,28 +224,33 @@ async function publish() {
     const windows = checkboxes.find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     if (!windows) return { ok: false, reason: 'Windows checkbox not found' };
     const alreadySelected = windows.checked;
-    if (!alreadySelected) windows.focus();
-    return { ok: true, alreadySelected };
+    const rect = windows.closest('label').querySelector('span').getBoundingClientRect();
+    return { ok: true, alreadySelected, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
-  if (!platformResult.alreadySelected) await pressSpace();
+  if (!platformResult.alreadySelected) await clickPoint(platformResult.x, platformResult.y);
 
-  const platformAction = await waitFor('выбранная платформа Windows', async () => evaluate(`(() => {
-    const windows = [...document.querySelectorAll('input[type="checkbox"]')]
-      .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
-    if (!windows?.checked) return false;
-    const buttons = [...document.querySelectorAll('button')];
-    const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
-    if (save && !save.disabled) {
+  if (platformResult.alreadySelected) {
+    const closed = await evaluate(`(() => {
+      const cancel = [...document.querySelectorAll('button')]
+        .find((button) => button.innerText.trim() === 'Cancel' && !button.disabled);
+      if (!cancel) return false;
+      cancel.click();
+      return true;
+    })()`);
+    if (!closed) fail(`Не удалось закрыть форму файла ${candidate.id}.`);
+  } else {
+    const saved = await waitFor('выбранная Windows и кнопка Save', async () => evaluate(`(() => {
+      const windows = [...document.querySelectorAll('input[type="checkbox"]')]
+        .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
+      const buttons = [...document.querySelectorAll('button')];
+      const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
+      if (!windows?.checked || !save || save.disabled) return false;
       save.click();
-      return 'saved';
-    }
-    const cancel = buttons.find((button) => button.innerText.trim() === 'Cancel' && !button.disabled);
-    if (!cancel) return false;
-    cancel.click();
-    return 'closed';
-  })()`), 10000, 500);
-  if (!platformAction) fail(`Не удалось применить платформу файла ${candidate.id}.`);
+      return true;
+    })()`), 30000, 1000);
+    if (!saved) fail(`Не удалось сохранить платформу файла ${candidate.id}.`);
+  }
 
   await waitFor('закрытие формы редактирования', async () => evaluate(
     `!document.body.innerText.includes('File ID: ${candidate.id}')`,
