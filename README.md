@@ -24,11 +24,11 @@
 | ⚔️ [Оружие договора вне слота](docs/patches/dnd55e-pact-weapon.md) | 📦 [DnD 5.5e All-in-One BEYOND](#-затронутые-моды) | 💡 Привязка пакта переживает перенос оружия в инвентарь: Lua-обработчик возвращает снятые статусы `PACT_BLADE*` |
 | 🎲 [Капсулы Пустоты: награда и расширенные пулы](docs/patches/ancient-mega-pack-void-capsule.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Исправляет пустую награду и автоматически дополняет штатные пулы снаряжением активных модов по редкости, слоту и тематике |
 | 🎩 [«Вечное эхо» очень редкой шляпы](docs/patches/ancient-mega-pack-eternal-echo.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Исправляет фактический дополнительный урон с ×1 до заявленных ×1,5 модификатора Интеллекта |
-| 🔨 [Оглушение редких булав](docs/patches/ancient-mega-pack-mace-stun.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Приводит длительность оглушения редкой и очень редкой булав к заявленным 2 и 3 ходам |
-| 💠 [Две версии «Кулона древнего усиления»](docs/patches/xfed-arcane-augmentation-pendant.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Исправляет русские описания очень редкой версии и добавляет отдельное легендарное завершение в мировую добычу xFED и легендарные капсулы |
-| ⚙️ [Нереализованные свойства xFED](docs/patches/xfed-missing-item-mechanics.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Реализует заклинательную характеристику Starsong Blade, возврат дротика и исправляет испытание ауры спор |
-| 📝 [Русская локализация xFED](docs/patches/xfed-russian-localization.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Добавляет 23 отсутствующие строки и исправляет 35 описаний, расходившихся с механикой предметов |
-| 🏺 [Описания Ancient Mega Pack](docs/patches/ancient-mega-pack-russian-localization.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Исправляет английские и русские описания распылятора, кулона и 40 вариантов оружия |
+| 🔨 [Исправления эффектов Ancient Mega Pack](docs/patches/ancient-mega-pack-mace-stun.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Приводит длительности состояний и отображаемые эффекты оружия и плаща к их фактической работе |
+| 💠 [Две версии «Кулона древнего усиления»](docs/patches/xfed-arcane-augmentation-pendant.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Уточняет отображаемые свойства очень редкой версии и добавляет отдельное легендарное завершение в мировую добычу xFED и легендарные капсулы |
+| ⚙️ [Исправления механик xFED](docs/patches/xfed-missing-item-mechanics.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Приводит свойства предметов к описанному поведению и устраняет битые ссылки состояний |
+| 📝 [Описания предметов xFED](docs/patches/xfed-russian-localization.md) | 📦 [Fade's Equipment Distribution AIO](#-затронутые-моды) | 💡 Исправляет отсутствующие и неточные описания эффектов, условий и числовых значений |
+| 🏺 [Описания Ancient Mega Pack](docs/patches/ancient-mega-pack-russian-localization.md) | 📦 [Ancient Mega Pack](#-затронутые-моды) | 💡 Приводит описания распылятора, кулона и оружия в соответствие с их фактической работой |
 
 ### 🗑️ Снятые
 

@@ -1,12 +1,14 @@
-# Оглушение редких булав Arcanizer
+# Исправления эффектов Ancient Mega Pack
 
 | | |
 |---|---|
 | Мод | [Ancient Mega Pack](../patched-mods.md#ancient-mega-pack) |
 | Версия на момент патча | 22.74.1.2 (`Version64` `803048110702985218`) |
-| Файл в Patch Relay | `Public/…/Stats/Generated/Data/Arcanizer_Main.txt` |
-| Файл в чужом моде | `Public/…/Stats/Generated/Data/Arcanizer_Main.txt` |
-| Переопределённые записи | Только `SpellSuccess` у `Target_Mace_r` и `Target_Mace_e` |
-| Базис | `TooltipStatusApply` обещает `STUNNED` на 2/3 хода, но оба `SpellSuccess` накладывают его на 1 ход |
+| Файлы в Patch Relay | `Public/…/Stats/Generated/Data/Arcanizer_Main.txt`, `MastersCloaks.txt` |
+| Файлы в чужом моде | Одноимённые файлы в `Public/REL_Full_Ancient_…/Stats/Generated/Data/` |
+| Переопределённые записи | `SpellSuccess` у `Target_Mace_r` и `Target_Mace_e`; `TooltipStatusApply` у `Zone_AMP_Scimitar_GustOfSand` и `CLOAK53_FEAR_EXPLOSION` |
+| Базис | Оглушение булав фактически длилось 1 ход вместо заявленных 2/3; две подсказки не перечисляли фактическую длительность или один из накладываемых статусов |
 
 Лестница булав повышает КС и заявленную длительность с редкостью, но редкая и очень редкая версии фактически оглушали лишь на один ход. Патч меняет длительность в `SpellSuccess` на заявленные 2 и 3 хода, не затрагивая урон, КС или перезарядку.
+
+У порыва песка фактически накладывались `OFF_BALANCED` и `BLINDED`, но подсказка показывала только ослепление. У взрыва плаща механика и основное описание задавали испуг на 2 хода, а техническая подсказка показывала 1. В обоих случаях изменено только отображение уже существующих эффектов.

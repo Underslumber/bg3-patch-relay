@@ -1,4 +1,0 @@
-new entry "RR_Barbarian_Equipment_Javelin_of_Returning_Fury"
-type "Weapon"
-using "RR_Barbarian_Equipment_Javelin_of_Returning_Fury"
-data "StatusOnEquip" "RR_THROWING_RETURN_TO_OWNER"

@@ -7,3 +7,8 @@ new entry "Target_Mace_e"
 type "SpellData"
 using "Target_Mace_e"
 data "SpellSuccess" "IF(not SavingThrow(Ability.Constitution, ManeuverSaveDC()+2)):ApplyStatus(STUNNED,100,3); DealDamage(MainMeleeWeapon, MainMeleeWeaponDamageType); ExecuteWeaponFunctors(MainHand)"
+
+new entry "Zone_AMP_Scimitar_GustOfSand"
+type "SpellData"
+using "Zone_AMP_Scimitar_GustOfSand"
+data "TooltipStatusApply" "ApplyStatus(OFF_BALANCED,100,1);ApplyStatus(BLINDED,100,1)"

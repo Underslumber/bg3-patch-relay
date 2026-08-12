@@ -1,0 +1,4 @@
+new entry "CLOAK53_FEAR_EXPLOSION"
+type "SpellData"
+using "CLOAK53_FEAR_EXPLOSION"
+data "TooltipStatusApply" "ApplyStatus(FRIGHTENED,100,2)"

@@ -1,0 +1,4 @@
+new entry "GG_Three_Druid_ExtraWildShape_Passive"
+type "PassiveData"
+using "GG_Three_Druid_ExtraWildShape_Passive"
+data "StatsFunctors" "ApplyStatus(SELF, GG_THREE_WILDSHAPE_TRACKER, 100, -1);ApplyEquipmentStatus(Breast, GG_THREE_EXTRA_WILDSHAPE_DEPLETED_TECHNICAL, 100, -1)"

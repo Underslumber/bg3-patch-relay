@@ -1,0 +1,9 @@
+new entry "PP_Warlock_Equipment_Tunic_of_the_Ascended_Warlock"
+type "Armor"
+using "PP_Warlock_Equipment_Tunic_of_the_Ascended_Warlock"
+data "PassivesOnEquip" "PP_AscendedPact_Text_Passive;PP_AP_Blade_Passive;PP_AP_BladeDeepened_Passive;PP_AP_Tome_Passive;PP_AP_TomeDeepened_Passive"
+
+new entry "Tut_PP_Warlock_Equipment_Tunic_of_the_Ascended_Warlock"
+type "Armor"
+using "Tut_PP_Warlock_Equipment_Tunic_of_the_Ascended_Warlock"
+data "PassivesOnEquip" "PP_AscendedPact_Text_Passive;PP_AP_Blade_Passive;PP_AP_BladeDeepened_Passive;PP_AP_Tome_Passive;PP_AP_TomeDeepened_Passive"
