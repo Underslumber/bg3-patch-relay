@@ -254,16 +254,22 @@ async function publish() {
   const platformState = await evaluate(`(() => {
     const windows = [...document.querySelectorAll('input[type="checkbox"]')]
       .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
-    const save = [...document.querySelectorAll('button')]
-      .reverse().find((button) => button.innerText.trim() === 'Save');
+    const buttons = [...document.querySelectorAll('button')];
+    const saveAndPublish = buttons.find((button) => button.innerText.trim() === 'Save & publish');
+    const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
     let saved = false;
-    if (windows?.checked && save) {
+    let publishedDirect = false;
+    if (windows?.checked && saveAndPublish && !saveAndPublish.disabled) {
+      saveAndPublish.click();
+      saved = true;
+      publishedDirect = true;
+    } else if (windows?.checked && save) {
       if (save.disabled) save.disabled = false;
       save.click();
       saved = true;
     }
     return { checked: windows?.checked, saveDisabled: save?.disabled,
-      saved, active: document.activeElement?.outerHTML ?? '',
+      saved, publishedDirect, active: document.activeElement?.outerHTML ?? '',
       buttons: [...document.querySelectorAll('button')].map((button) => ({
         text: button.innerText.trim(), disabled: button.disabled,
       })).filter((button) => button.text) };
@@ -287,25 +293,27 @@ async function publish() {
     `!document.body.innerText.includes('File ID: ${candidate.id}')`,
   ), 60000, 1500);
 
-  const publishClicked = await waitFor('кнопка Publish нового файла', async () => evaluate(`(() => {
-    const row = [...document.querySelectorAll('tbody tr')].find((item) =>
-      item.querySelector('a[href*="/files/${candidate.id}/download"]'));
-    const button = [...(row?.querySelectorAll('button') ?? [])]
-      .find((item) => item.innerText.trim() === 'Publish');
-    if (!button || button.disabled) return false;
-    button.click();
-    return true;
-  })()`), 60000, 1500);
-  if (!publishClicked) fail(`Не удалось нажать Publish для файла ${candidate.id}.`);
+  if (!platformState.publishedDirect) {
+    const publishClicked = await waitFor('кнопка Publish нового файла', async () => evaluate(`(() => {
+      const row = [...document.querySelectorAll('tbody tr')].find((item) =>
+        item.querySelector('a[href*="/files/${candidate.id}/download"]'));
+      const button = [...(row?.querySelectorAll('button') ?? [])]
+        .find((item) => item.innerText.trim() === 'Publish');
+      if (!button || button.disabled) return false;
+      button.click();
+      return true;
+    })()`), 60000, 1500);
+    if (!publishClicked) fail(`Не удалось нажать Publish для файла ${candidate.id}.`);
 
-  await sleep(1200);
-  await evaluate(`(() => {
-    const candidates = [...document.querySelectorAll('button')].filter((button) =>
-      button.innerText.trim() === 'Publish' && !button.disabled && !button.closest('tbody tr'));
-    const confirmation = candidates.at(-1);
-    if (confirmation) confirmation.click();
-    return Boolean(confirmation);
-  })()`);
+    await sleep(1200);
+    await evaluate(`(() => {
+      const candidates = [...document.querySelectorAll('button')].filter((button) =>
+        button.innerText.trim() === 'Publish' && !button.disabled && !button.closest('tbody tr'));
+      const confirmation = candidates.at(-1);
+      if (confirmation) confirmation.click();
+      return Boolean(confirmation);
+    })()`);
+  }
 
   const liveRow = await waitFor('опубликованный проверенный файл', async () => {
     await navigate(adminUrl);
