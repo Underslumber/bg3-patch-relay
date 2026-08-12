@@ -132,11 +132,42 @@ async function snapshot() {
 async function check() {
   await openAdmin();
   const rows = await readRows();
+  const candidateFileId = options.get('--candidate-file-id');
+  let candidateForm;
+  if (candidateFileId) {
+    const opened = await evaluate(`(() => {
+      const row = [...document.querySelectorAll('tbody tr')].find((item) =>
+        item.querySelector('a[href*="/files/${candidateFileId}/download"]'));
+      const button = row?.querySelector('svg[data-icon="pencil-alt"]')?.closest('button');
+      if (!button) return false;
+      button.click();
+      return true;
+    })()`);
+    if (!opened) fail(`Не удалось открыть диагностику файла ${candidateFileId}.`);
+    await waitFor('форма диагностики файла', async () => evaluate(
+      `document.body.innerText.includes('File ID: ${candidateFileId}')`,
+    ), 30000, 1000);
+    candidateForm = await evaluate(`({
+      checkboxes: [...document.querySelectorAll('input[type="checkbox"]')].map((input) => ({
+        checked: input.checked,
+        disabled: input.disabled,
+        name: input.name,
+        value: input.value,
+        context: input.closest('label')?.innerText.trim()
+          ?? input.parentElement?.parentElement?.innerText.trim()
+          ?? '',
+      })),
+      buttons: [...document.querySelectorAll('button')].map((button) => ({
+        text: button.innerText.trim(),
+        disabled: button.disabled,
+      })).filter((button) => button.text),
+    })`);
+  }
   await navigate(publicUrl);
   const publicFileIds = await evaluate(`([...document.querySelectorAll('a[href*="/files/"]')]
     .map((link) => (link.href.match(/files\\/(\\d+)/) ?? [])[1])
     .filter(Boolean))`);
-  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows, publicFileIds });
+  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows, candidateForm, publicFileIds });
 }
 
 async function closeAdmin() {

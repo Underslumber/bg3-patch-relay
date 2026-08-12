@@ -89,6 +89,7 @@ jobs:
           }
           & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs check `
             --slug bg3-underslumber-patch-relay `
+            --candidate-file-id '${{ inputs.candidate_file_id }}' `
             --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-check.json')
           if ($LASTEXITCODE -ne 0) { throw "Patch Relay browser session check failed: $LASTEXITCODE" }
 
