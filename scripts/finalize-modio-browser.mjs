@@ -263,7 +263,10 @@ async function publish() {
       saved = true;
     }
     return { checked: windows?.checked, saveDisabled: save?.disabled,
-      saved, active: document.activeElement?.outerHTML ?? '' };
+      saved, active: document.activeElement?.outerHTML ?? '',
+      buttons: [...document.querySelectorAll('button')].map((button) => ({
+        text: button.innerText.trim(), disabled: button.disabled,
+      })).filter((button) => button.text) };
   })()`);
   process.stdout.write(`Windows control after click: ${JSON.stringify(platformState)}\n`);
 
