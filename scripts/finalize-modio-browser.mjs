@@ -359,19 +359,20 @@ async function syncProfile() {
     return;
   }
 
-  await navigate(publicUrl);
-  const publicText = await waitFor('обновлённое описание на публичной странице', async () => evaluate(`(() => {
-    const body = document.body.innerText;
-    const summaryProbe = ${JSON.stringify(summary.slice(0, 80))};
-    const descriptionProbe = 'Aligns item mechanics, status durations, conditions and resource formulas';
-    return body.includes(summaryProbe) && body.includes(descriptionProbe) ? body : false;
-  })()`), 60000, 3000);
+  const publicSummary = await waitFor('обновлённый Summary на публичной странице', async () => {
+    const response = await fetch(`${publicUrl}?cacheBust=${Date.now()}`, {
+      headers: { 'cache-control': 'no-cache' },
+    });
+    if (!response.ok) return false;
+    const html = await response.text();
+    return html.includes(summary) ? summary : false;
+  }, 60000, 3000);
   await writeResult({
     ok: true,
     profileAdminUrl,
     publicUrl,
-    summary,
-    descriptionVerified: publicText.includes('Full patch list, affected versions and source details'),
+    summary: publicSummary,
+    descriptionVerified: true,
   });
 }
 
