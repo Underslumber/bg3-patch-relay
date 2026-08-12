@@ -193,7 +193,7 @@ async function publish() {
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     if (!alreadySelected) windows.focus();
-    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y };
+    return { ok: alreadySelected || Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
   if (!platformResult.alreadySelected) await pressSpace();
