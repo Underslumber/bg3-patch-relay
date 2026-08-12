@@ -231,27 +231,22 @@ async function publish() {
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
   if (!platformResult.alreadySelected) await pressSpace();
 
-  if (platformResult.alreadySelected) {
-    const closed = await evaluate(`(() => {
-      const cancel = [...document.querySelectorAll('button')]
-        .find((button) => button.innerText.trim() === 'Cancel' && !button.disabled);
-      if (!cancel) return false;
-      cancel.click();
-      return true;
-    })()`);
-    if (!closed) fail(`Не удалось закрыть форму файла ${candidate.id}.`);
-  } else {
-    const saved = await waitFor('выбранная Windows и кнопка Save', async () => evaluate(`(() => {
-      const windows = [...document.querySelectorAll('input[type="checkbox"]')]
-        .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
-      const buttons = [...document.querySelectorAll('button')];
-      const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
-      if (!windows?.checked || !save || save.disabled) return false;
+  const platformAction = await waitFor('выбранная платформа Windows', async () => evaluate(`(() => {
+    const windows = [...document.querySelectorAll('input[type="checkbox"]')]
+      .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
+    if (!windows?.checked) return false;
+    const buttons = [...document.querySelectorAll('button')];
+    const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
+    if (save && !save.disabled) {
       save.click();
-      return true;
-    })()`), 30000, 1000);
-    if (!saved) fail(`Не удалось сохранить платформу файла ${candidate.id}.`);
-  }
+      return 'saved';
+    }
+    const cancel = buttons.find((button) => button.innerText.trim() === 'Cancel' && !button.disabled);
+    if (!cancel) return false;
+    cancel.click();
+    return 'closed';
+  })()`), 10000, 500);
+  if (!platformAction) fail(`Не удалось применить платформу файла ${candidate.id}.`);
 
   await waitFor('закрытие формы редактирования', async () => evaluate(
     `!document.body.innerText.includes('File ID: ${candidate.id}')`,
