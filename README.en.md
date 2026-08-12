@@ -25,6 +25,8 @@ The table is a table of contents: one row per patch, the details live in a separ
 | 🎲 [Void capsules: reward and extended pools](docs/patches/ancient-mega-pack-void-capsule.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Fixes the empty reward and automatically tops up the stock pools with gear from active mods by rarity, slot and theme |
 | 🎩 [Eternal Echo on the very rare hat](docs/patches/ancient-mega-pack-eternal-echo.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Raises the actual bonus damage from ×1 to the advertised ×1.5 Intelligence modifier |
 | 💠 [Two versions of the Arcane Augmentation Pendant](docs/patches/xfed-arcane-augmentation-pendant.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Fixes the Russian descriptions of the very rare version and adds a separate legendary capstone to xFED world loot and to legendary capsules |
+| 📝 [xFED Russian localization](docs/patches/xfed-russian-localization.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Adds 23 missing strings and fixes 4 descriptions that disagreed with the item mechanics |
+| 🏺 [Ancient Mega Pack Russian localization](docs/patches/ancient-mega-pack-russian-localization.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Adds 2 missing player-facing strings and updates the stale Arcanizer description |
 
 ### 🗑️ Removed
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h030cfbceg6228g4604ga04dg17d9ad402a49" version="1">Обманчивая личина</content>
+  <content contentuid="h030cfbceg6228g4604ga04dg17d9ad402a50" version="1">Вы получаете бонус +[1] к &lt;LSTag Tooltip="AbilityCheck"&gt;проверкам&lt;/LSTag&gt; на обман.</content>
+  <content contentuid="hdb60b3c5g1fe7g4eb4g8eacg8ef18f5592a15" version="1">Ваши &lt;LSTag Type="Spell" Tooltip="Target_UnarmedAttack"&gt;безоружные атаки&lt;/LSTag&gt; наносят дополнительно +[1] урона, а вы получаете бонус +[2] к &lt;LSTag Tooltip="AttackRoll"&gt;броскам&lt;/LSTag&gt; &lt;LSTag Type="Spell" Tooltip="Target_UnarmedAttack"&gt;безоружных атак&lt;/LSTag&gt;.</content>
+</contentList>

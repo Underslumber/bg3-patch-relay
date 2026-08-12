@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h154deae1gb7aag4b5fgbb28g0286ae978da8" version="1">Направьте непоколебимую веру павшего воина, чтобы высвободить лучистый взрыв. Все существа в пределах [1] должны пройти &lt;LSTag Tooltip="SavingThrow"&gt;испытание&lt;/LSTag&gt; Выносливости. При провале они получают [2]. Злые существа проходят испытание с &lt;LSTag Tooltip="Disadvantage"&gt;помехой&lt;/LSTag&gt;, а добрые получают половину обычного урона. При успешном испытании получаемый урон уменьшается ещё вдвое.</content>
+</contentList>

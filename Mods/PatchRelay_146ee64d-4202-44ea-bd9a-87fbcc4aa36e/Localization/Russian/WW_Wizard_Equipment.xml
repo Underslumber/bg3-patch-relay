@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab88" version="1">Инфернальная искра</content>
+  <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab89" version="1">Когда носитель наносит урон &lt;LSTag Type="Spell" Tooltip="Projectile_Fireball"&gt;Огненным шаром&lt;/LSTag&gt; или &lt;LSTag Type="Spell" Tooltip="Target_Firebolt"&gt;Огненным снарядом&lt;/LSTag&gt;, цель получает &lt;LSTag Type="Status" Tooltip="BURNING"&gt;Горение&lt;/LSTag&gt; на [1] ход.</content>
+  <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab90" version="1">Призматическое эхо</content>
+  <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab91" version="1">Когда носитель сотворяет &lt;LSTag Type="Spell" Tooltip="Projectile_ChromaticOrb"&gt;Хроматический шар&lt;/LSTag&gt;, заклинание наносит дополнительно [1] урона. Созданные заклинанием поверхности также наносят дополнительно [1] урона.</content>
+</contentList>

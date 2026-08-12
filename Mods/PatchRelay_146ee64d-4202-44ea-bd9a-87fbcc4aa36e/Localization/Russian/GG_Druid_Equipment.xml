@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a37" version="1">Проверка экипировки при симбиозе со спорами</content>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a38" version="1">Если снять предмет, который даёт вам состояние, пока активен &lt;LSTag Type="Spell" Tooltip="Shout_SymbioticEntity"&gt;симбиоз со спорами&lt;/LSTag&gt;, это состояние будет снято, и вам потребуется повторно активировать &lt;LSTag Type="Spell" Tooltip="Shout_SymbioticEntity"&gt;симбиоз со спорами&lt;/LSTag&gt;.</content>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a39" version="1">Пробуждение зелени</content>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a40" version="1">Когда носитель принимает &lt;LSTag Type="Spell" Tooltip="Shout_WildShape"&gt;дикий облик&lt;/LSTag&gt; или активирует &lt;LSTag Type="Spell" Tooltip="Shout_SymbioticEntity"&gt;симбиоз со спорами&lt;/LSTag&gt;, он получает &lt;LSTag Type="Status" Tooltip="GG_GROVE_IN_BOTTLE_BUFF"&gt;Стойкость леса&lt;/LSTag&gt;.</content>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a41" version="1">Стойкость леса</content>
+  <content contentuid="h81fabb63g0e34g4497g891cgcc0c575648a42" version="1">Дикая магия рощи поддерживает существо. Оно наносит дополнительно [1] урона, а весь получаемый им урон уменьшается на [2].</content>
+  <content contentuid="hff40c57bg4398g48afgb373gfa95d7f607e20" version="1">Находясь в ярости в &lt;LSTag Type="Spell" Tooltip="Shout_WildShape"&gt;диком облике&lt;/LSTag&gt;, вы ощущаете прилив кровожадности и восстанавливаете &lt;LSTag Tooltip="HitPoints"&gt;ОЗ&lt;/LSTag&gt; в размере 25 % от урона, нанесённого существам. Кроме того, ваши атаки наносят дополнительно [2].</content>
+</contentList>

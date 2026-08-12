@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f118" version="1">Острие сглаза</content>
+  <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f119" version="1">Когда носитель наносит урон существу под действием &lt;LSTag Type="Spell" Tooltip="Target_Hex"&gt;Сглаза&lt;/LSTag&gt;, значение, необходимое для &lt;LSTag Tooltip="CriticalHit"&gt;критического удара&lt;/LSTag&gt; по этому существу, уменьшается на [1]. Эффект суммируется.</content>
+</contentList>

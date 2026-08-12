@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="haf76ad47ga68bg4c02gaa1dgae0d5c2aaa01" version="1">Fade's Equipment Distribution: рандомизатор</content>
+  <content contentuid="haf76ad47ga68bg4c02gaa1dgae0d5c2aaa02" version="1">При включении предметы из Fade's Equipment Distribution распределяются случайным образом.&lt;br&gt;Эту настройку можно включать и отключать только вне боя.</content>
+  <content contentuid="haf76ad47ga68bg4c02gaa1dgae0d5c2aaa03" version="1">Рандомизатор FED включён</content>
+  <content contentuid="haf76ad47ga68bg4c02gaa1dgae0d5c2aaa04" version="1">Предметы из Fade's Equipment Distribution распределяются случайным образом.&lt;br&gt;&lt;LSTag Type="Image" Info="TutorialYellowWarning"/&gt;Пока эта настройка включена, могут попадаться одинаковые предметы.</content>
+</contentList>
