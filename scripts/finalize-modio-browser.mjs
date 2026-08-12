@@ -251,6 +251,34 @@ async function syncProfile() {
     `Boolean(globalThis.tinymce?.activeEditor?.initialized)`,
   ), 60000, 1000);
 
+  await evaluate(`(() => {
+    const requestedSummary = ${JSON.stringify(summary)};
+    const requestedDescription = ${JSON.stringify(descriptionHtml)};
+    if (!globalThis.__patchRelayOriginalXhrSend) {
+      globalThis.__patchRelayOriginalXhrSend = XMLHttpRequest.prototype.send;
+    }
+    XMLHttpRequest.prototype.send = function sendProfile(body) {
+      if (body instanceof FormData) {
+        if (body.has('summary')) body.set('summary', requestedSummary);
+        if (body.has('description')) body.set('description', requestedDescription);
+      } else if (typeof body === 'string' && body.includes('summary=')) {
+        const values = new URLSearchParams(body);
+        values.set('summary', requestedSummary);
+        if (values.has('description')) values.set('description', requestedDescription);
+        body = values.toString();
+      } else if (typeof body === 'string' && body.trimStart().startsWith('{')) {
+        try {
+          const values = JSON.parse(body);
+          if (Object.hasOwn(values, 'summary')) values.summary = requestedSummary;
+          if (Object.hasOwn(values, 'description')) values.description = requestedDescription;
+          body = JSON.stringify(values);
+        } catch {}
+      }
+      return globalThis.__patchRelayOriginalXhrSend.call(this, body);
+    };
+    return true;
+  })()`);
+
   const summaryFocused = await evaluate(`(() => {
     const summaryInput = [...document.querySelectorAll('textarea')]
       .find((input) => input.placeholder?.includes('Tell us about the changes'));
