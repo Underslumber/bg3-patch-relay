@@ -73,6 +73,14 @@ async function navigate(url) {
   await sleep(3000);
 }
 
+async function pressSpace() {
+  const page = await findPage();
+  if (!page) fail('В CDP не найдена вкладка браузера.');
+  const key = { key: ' ', code: 'Space', windowsVirtualKeyCode: 32, nativeVirtualKeyCode: 32 };
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...key });
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...key });
+}
+
 async function waitFor(description, probe, timeout = timeoutSeconds * 1000, interval = 3000) {
   const deadline = Date.now() + timeout;
   let lastValue;
@@ -217,15 +225,11 @@ async function publish() {
     const windows = checkboxes.find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     if (!windows) return { ok: false, reason: 'Windows checkbox not found' };
     const alreadySelected = windows.checked;
-    if (!alreadySelected) {
-      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'checked').set;
-      setter.call(windows, true);
-      windows.dispatchEvent(new Event('input', { bubbles: true }));
-      windows.dispatchEvent(new Event('change', { bubbles: true }));
-    }
+    if (!alreadySelected) windows.focus();
     return { ok: true, alreadySelected };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
+  if (!platformResult.alreadySelected) await pressSpace();
 
   if (platformResult.alreadySelected) {
     const closed = await evaluate(`(() => {
