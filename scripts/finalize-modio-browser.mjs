@@ -15,6 +15,7 @@ const slug = options.get('--slug') ?? 'bg3-underslumber-patch-relay';
 const timeoutSeconds = Number(options.get('--timeout-seconds') ?? 900);
 const resultPath = options.get('--result');
 const adminUrl = `https://mod.io/g/baldursgate3/m/${slug}/admin/settings#files`;
+const profileAdminUrl = `https://mod.io/g/baldursgate3/m/${slug}/admin/settings`;
 const publicUrl = `https://mod.io/g/baldursgate3/m/${slug}`;
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -155,6 +156,30 @@ async function closeAdmin() {
   const pages = (await getPages()).filter((page) => page.type === 'page' && page.url.includes(slug));
   for (const page of pages) await cdp(page, 'Page.close');
   await writeResult({ ok: true, closedPages: pages.length });
+}
+
+async function profileCheck() {
+  await navigate(profileAdminUrl);
+  await waitFor('профиль Patch Relay', async () => evaluate(
+    `location.href.includes('/admin/settings') && document.body.innerText.includes('Mod profile')`,
+  ), 60000, 2000);
+  const fields = await evaluate(`(() => ({
+    inputs: [...document.querySelectorAll('input')].map((input) => ({
+      name: input.name, type: input.type, placeholder: input.placeholder,
+      ariaLabel: input.getAttribute('aria-label'), value: input.value,
+    })),
+    textareas: [...document.querySelectorAll('textarea')].map((input) => ({
+      name: input.name, placeholder: input.placeholder,
+      ariaLabel: input.getAttribute('aria-label'), value: input.value,
+    })),
+    contenteditables: [...document.querySelectorAll('[contenteditable="true"]')].map((input) => ({
+      role: input.getAttribute('role'), ariaLabel: input.getAttribute('aria-label'),
+      className: input.className, text: input.innerText,
+    })),
+    buttons: [...document.querySelectorAll('button')].map((button) => button.innerText.trim())
+      .filter(Boolean),
+  }))()`);
+  await writeResult({ ok: true, profileAdminUrl, fields });
 }
 
 async function publish() {
@@ -322,14 +347,15 @@ async function publish() {
   });
 }
 
-if (!['check', 'snapshot', 'close-admin', 'publish'].includes(command)) {
-  fail('Команда должна быть check, snapshot, close-admin или publish.');
+if (!['check', 'snapshot', 'close-admin', 'profile-check', 'publish'].includes(command)) {
+  fail('Команда должна быть check, snapshot, close-admin, profile-check или publish.');
 }
 
 try {
   if (command === 'check') await check();
   if (command === 'snapshot') await snapshot();
   if (command === 'close-admin') await closeAdmin();
+  if (command === 'profile-check') await profileCheck();
   if (command === 'publish') await publish();
 } catch (error) {
   console.error(error.stack ?? error.message);

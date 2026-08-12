@@ -31,6 +31,11 @@ on:
         description: Optional mod.io changelog; one change per line
         required: false
         type: string
+      inspect_profile:
+        description: Read the current mod.io profile fields without changing them
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -96,6 +101,15 @@ jobs:
             --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-check.json')
           if ($LASTEXITCODE -ne 0) { throw "Patch Relay browser session check failed: $LASTEXITCODE" }
 
+      - name: Inspect mod.io profile
+        if: ${{ inputs.inspect_profile == true }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs profile-check `
+            --slug bg3-underslumber-patch-relay `
+            --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-profile.json')
+          if ($LASTEXITCODE -ne 0) { throw "Could not inspect the mod.io profile: $LASTEXITCODE" }
+
       - name: Capture current mod.io files
         if: ${{ github.event_name == 'release' || (inputs.validate_only != true && inputs.finalize_only != true) }}
         id: baseline
@@ -160,4 +174,5 @@ jobs:
             ${{ runner.temp }}/patch-relay-modio-check.json
             ${{ runner.temp }}/patch-relay-modio-publish.log
             ${{ runner.temp }}/patch-relay-modio-result.json
+            ${{ runner.temp }}/patch-relay-modio-profile.json
             ${{ runner.temp }}/bg3-toolkit-publish-diagnostics/**
