@@ -171,6 +171,10 @@ async function profileCheck() {
     textareas: [...document.querySelectorAll('textarea')].map((input) => ({
       name: input.name, placeholder: input.placeholder,
       ariaLabel: input.getAttribute('aria-label'), value: input.value,
+      className: input.className,
+      outerHTML: input.outerHTML,
+      context: input.parentElement?.parentElement?.innerText?.trim() ?? '',
+      contextHTML: input.parentElement?.parentElement?.outerHTML?.slice(0, 4000) ?? '',
     })),
     contenteditables: [...document.querySelectorAll('[contenteditable="true"]')].map((input) => ({
       role: input.getAttribute('role'), ariaLabel: input.getAttribute('aria-label'),
@@ -178,6 +182,14 @@ async function profileCheck() {
     })),
     buttons: [...document.querySelectorAll('button')].map((button) => button.innerText.trim())
       .filter(Boolean),
+    frames: [...document.querySelectorAll('iframe')].map((frame) => ({
+      title: frame.title, src: frame.src, className: frame.className,
+    })),
+    roleTextboxes: [...document.querySelectorAll('[role="textbox"]')].map((input) => ({
+      tagName: input.tagName, ariaLabel: input.getAttribute('aria-label'),
+      className: input.className, text: input.innerText, value: input.value,
+      outerHTML: input.outerHTML.slice(0, 4000),
+    })),
   }))()`);
   await writeResult({ ok: true, profileAdminUrl, fields });
 }
