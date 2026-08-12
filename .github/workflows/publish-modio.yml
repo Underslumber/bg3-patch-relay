@@ -97,6 +97,9 @@ jobs:
         if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
         run: |
           $ErrorActionPreference = 'Stop'
+          & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs close-admin `
+            --slug bg3-underslumber-patch-relay
+          if ($LASTEXITCODE -ne 0) { throw "Could not close the stale Patch Relay browser tab: $LASTEXITCODE" }
           & .\scripts\stage-toolkit-project.ps1 -Workspace $env:GITHUB_WORKSPACE
 
       - name: Publish through official Toolkit

@@ -135,6 +135,12 @@ async function check() {
   await writeResult({ ok: true, adminUrl, fileCount: rows.length });
 }
 
+async function closeAdmin() {
+  const pages = (await getPages()).filter((page) => page.type === 'page' && page.url.includes(slug));
+  for (const page of pages) await cdp(page, 'Page.close');
+  await writeResult({ ok: true, closedPages: pages.length });
+}
+
 async function publish() {
   const expectedPrefix = options.get('--expected-version-prefix');
   if (!expectedPrefix) fail('Не задан --expected-version-prefix.');
@@ -230,13 +236,14 @@ async function publish() {
   });
 }
 
-if (!['check', 'snapshot', 'publish'].includes(command)) {
-  fail('Команда должна быть check, snapshot или publish.');
+if (!['check', 'snapshot', 'close-admin', 'publish'].includes(command)) {
+  fail('Команда должна быть check, snapshot, close-admin или publish.');
 }
 
 try {
   if (command === 'check') await check();
   if (command === 'snapshot') await snapshot();
+  if (command === 'close-admin') await closeAdmin();
   if (command === 'publish') await publish();
 } catch (error) {
   console.error(error.stack ?? error.message);
