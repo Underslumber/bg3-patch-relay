@@ -206,16 +206,19 @@ async function publish() {
 
   const platformResult = await evaluate(`(() => {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];
-    if (checkboxes.length < 4) return { ok: false, reason: 'platform checkboxes not found' };
-    if (!checkboxes[0].checked) checkboxes[0].click();
-    return { ok: true, windows: checkboxes[0].checked };
+    const windows = checkboxes.find((input) => input.closest('label')?.innerText.trim() === 'Windows');
+    if (!windows) return { ok: false, reason: 'Windows checkbox not found' };
+    if (!windows.checked) windows.closest('label').click();
+    return { ok: true };
   })()`);
-  if (!platformResult?.ok || !platformResult.windows) fail('Не удалось выбрать платформу Windows.');
+  if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
 
-  const saved = await waitFor('кнопка Save', async () => evaluate(`(() => {
+  const saved = await waitFor('выбранная Windows и кнопка Save', async () => evaluate(`(() => {
+    const windows = [...document.querySelectorAll('input[type="checkbox"]')]
+      .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     const buttons = [...document.querySelectorAll('button')];
     const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
-    if (!save || save.disabled) return false;
+    if (!windows?.checked || !save || save.disabled) return false;
     save.click();
     return true;
   })()`), 30000, 1000);
