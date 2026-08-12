@@ -138,12 +138,14 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $result = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-result.json'
+          $changelogFile = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-changelog.txt'
+          [IO.File]::WriteAllText($changelogFile, $env:MODIO_CHANGELOG, [Text.UTF8Encoding]::new($false))
           & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs publish `
             --slug bg3-underslumber-patch-relay `
             --expected-version-prefix '${{ steps.release.outputs.version_prefix }}' `
             --baseline-file-ids '${{ steps.baseline.outputs.file_ids }}' `
             --candidate-file-id '${{ inputs.candidate_file_id }}' `
-            --changelog "$env:MODIO_CHANGELOG" `
+            --changelog-file $changelogFile `
             --timeout-seconds 900 `
             --result $result
           if ($LASTEXITCODE -ne 0) { throw "mod.io finalization failed: $LASTEXITCODE" }

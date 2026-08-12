@@ -158,7 +158,8 @@ async function publish() {
   if (!expectedPrefix) fail('Не задан --expected-version-prefix.');
   const baseline = new Set((options.get('--baseline-file-ids') ?? '').split(',').filter(Boolean));
   const candidateFileId = options.get('--candidate-file-id');
-  const changelog = (options.get('--changelog') ?? '').trim();
+  const changelogFile = options.get('--changelog-file');
+  const changelog = (changelogFile ? fs.readFileSync(changelogFile, 'utf8') : '').trim();
 
   await openAdmin();
   const candidate = await waitFor('новый проверенный файл mod.io', async () => {
