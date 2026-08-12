@@ -87,6 +87,22 @@ async function pressSpace() {
   await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...key });
 }
 
+async function replaceFocusedText(value) {
+  const page = await findPage();
+  if (!page) fail('В CDP не найдена вкладка браузера.');
+  const shortcut = { key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, nativeVirtualKeyCode: 65, modifiers: 2 };
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...shortcut });
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...shortcut });
+  await cdp(page, 'Input.insertText', { text: value });
+}
+
+async function clickAt(x, y) {
+  const page = await findPage();
+  if (!page) fail('В CDP не найдена вкладка браузера.');
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
+}
+
 async function waitFor(description, probe, timeout = timeoutSeconds * 1000, interval = 3000) {
   const deadline = Date.now() + timeout;
   let lastValue;
@@ -205,7 +221,10 @@ async function syncProfile() {
   const profile = JSON.parse(fs.readFileSync(profileFile, 'utf8'));
   const summary = profile.summary?.trim();
   const descriptionHtml = profile.descriptionHtml?.trim();
-  if (!summary || !descriptionHtml) fail('В профиле нужны summary и descriptionHtml.');
+  const descriptionText = profile.descriptionText?.trim();
+  if (!summary || !descriptionHtml || !descriptionText) {
+    fail('В профиле нужны summary, descriptionHtml и descriptionText.');
+  }
   if (summary.length > 250) fail(`Summary длиннее 250 символов: ${summary.length}.`);
 
   await navigate(profileAdminUrl);
@@ -216,36 +235,44 @@ async function syncProfile() {
     `Boolean(globalThis.tinymce?.activeEditor?.initialized)`,
   ), 60000, 1000);
 
-  const changed = await evaluate(`(() => {
-    const requestedSummary = ${JSON.stringify(summary)};
-    const requestedDescription = ${JSON.stringify(descriptionHtml)};
+  const summaryFocused = await evaluate(`(() => {
+    const summaryInput = [...document.querySelectorAll('textarea')]
+      .find((input) => input.placeholder?.includes('Tell us about the changes'));
+    if (!summaryInput) return false;
+    summaryInput.focus();
+    return document.activeElement === summaryInput;
+  })()`);
+  if (!summaryFocused) fail('Не удалось сфокусировать Summary.');
+  await replaceFocusedText(summary);
+
+  const editorFocused = await evaluate(`(() => {
+    const editor = globalThis.tinymce?.activeEditor;
+    if (!editor) return false;
+    editor.focus();
+    editor.selection.select(editor.getBody(), true);
+    return true;
+  })()`);
+  if (!editorFocused) fail('Не удалось сфокусировать редактор описания.');
+  await replaceFocusedText(descriptionText);
+
+  const filled = await evaluate(`(() => {
     const summaryInput = [...document.querySelectorAll('textarea')]
       .find((input) => input.placeholder?.includes('Tell us about the changes'));
     const editor = globalThis.tinymce?.activeEditor;
-    if (!summaryInput) return { ok: false, reason: 'Summary textarea not found' };
-    if (!editor) return { ok: false, reason: 'TinyMCE editor not found' };
-
-    const textareaSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
-    textareaSetter?.call(summaryInput, requestedSummary);
-    summaryInput.dispatchEvent(new Event('input', { bubbles: true }));
-    summaryInput.dispatchEvent(new Event('change', { bubbles: true }));
-    editor.setContent(requestedDescription);
-    editor.fire('input');
-    editor.fire('change');
-    editor.save();
-
-    return { ok: true };
+    return summaryInput?.value === ${JSON.stringify(summary)}
+      && editor?.getContent({ format: 'text' }).includes('Aligns item mechanics, status durations, conditions and resource formulas');
   })()`);
-  if (!changed?.ok) fail(`Не удалось заполнить профиль: ${changed?.reason ?? 'unknown error'}.`);
+  if (!filled) fail('Поля профиля не приняли введённый текст.');
 
-  const saved = await waitFor('активная кнопка сохранения профиля', async () => evaluate(`(() => {
+  const savePoint = await waitFor('активная кнопка сохранения профиля', async () => evaluate(`(() => {
     const save = [...document.querySelectorAll('button')]
       .find((button) => button.innerText.trim() === 'Save' && !button.disabled);
     if (!save) return false;
-    save.click();
-    return true;
+    save.scrollIntoView({ block: 'center' });
+    const rect = save.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   })()`), 30000, 500);
-  if (!saved) fail('Не удалось сохранить профиль Patch Relay.');
+  await clickAt(savePoint.x, savePoint.y);
 
   await waitFor('завершение сохранения профиля', async () => evaluate(`(() => {
     const save = [...document.querySelectorAll('button')]
