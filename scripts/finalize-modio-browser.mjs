@@ -3,8 +3,12 @@ import fs from 'node:fs';
 const args = process.argv.slice(2);
 const command = args.shift();
 const options = new Map();
-for (let index = 0; index < args.length; index += 2) {
-  options.set(args[index], args[index + 1]);
+for (let index = 0; index < args.length; index += 1) {
+  const key = args[index];
+  if (!key.startsWith('--')) fail(`Неизвестный аргумент: ${key}`);
+  const next = args[index + 1];
+  const value = next && !next.startsWith('--') ? args[++index] : '';
+  options.set(key, value);
 }
 
 const slug = options.get('--slug') ?? 'bg3-underslumber-patch-relay';
