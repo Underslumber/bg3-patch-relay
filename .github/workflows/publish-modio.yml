@@ -27,6 +27,10 @@ on:
         description: Existing mod.io File ID for finalize_only
         required: false
         type: string
+      changelog:
+        description: Optional mod.io changelog; one change per line
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -129,6 +133,8 @@ jobs:
 
       - name: Finalize new file on mod.io
         if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        env:
+          MODIO_CHANGELOG: ${{ github.event_name == 'release' && github.event.release.body || inputs.changelog }}
         run: |
           $ErrorActionPreference = 'Stop'
           $result = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-result.json'
@@ -137,6 +143,7 @@ jobs:
             --expected-version-prefix '${{ steps.release.outputs.version_prefix }}' `
             --baseline-file-ids '${{ steps.baseline.outputs.file_ids }}' `
             --candidate-file-id '${{ inputs.candidate_file_id }}' `
+            --changelog "$env:MODIO_CHANGELOG" `
             --timeout-seconds 900 `
             --result $result
           if ($LASTEXITCODE -ne 0) { throw "mod.io finalization failed: $LASTEXITCODE" }

@@ -158,6 +158,7 @@ async function publish() {
   if (!expectedPrefix) fail('Не задан --expected-version-prefix.');
   const baseline = new Set((options.get('--baseline-file-ids') ?? '').split(',').filter(Boolean));
   const candidateFileId = options.get('--candidate-file-id');
+  const changelog = (options.get('--changelog') ?? '').trim();
 
   await openAdmin();
   const candidate = await waitFor('новый проверенный файл mod.io', async () => {
@@ -197,6 +198,20 @@ async function publish() {
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
   if (!platformResult.alreadySelected) await pressSpace();
   await sleep(500);
+  const changelogChanged = await evaluate(`(() => {
+    const requestedChangelog = ${JSON.stringify(changelog)};
+    const changelogInput = [...document.querySelectorAll('textarea')]
+      .find((input) => input.closest('label')?.innerText.includes('Changelog')
+        || input.getAttribute('placeholder')?.includes('Enter each change'));
+    if (!requestedChangelog || !changelogInput
+      || changelogInput.value.trim() === requestedChangelog) return false;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
+    setter?.call(changelogInput, requestedChangelog);
+    changelogInput.dispatchEvent(new Event('input', { bubbles: true }));
+    changelogInput.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  })()`);
+  if (changelogChanged) await sleep(500);
   const platformState = await evaluate(`(() => {
     const windows = [...document.querySelectorAll('input[type="checkbox"]')]
       .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
@@ -209,15 +224,14 @@ async function publish() {
       saveAndPublish.click();
       saved = true;
       publishedDirect = true;
-    } else if (windows?.checked && save) {
-      if (save.disabled) save.disabled = false;
+    } else if (windows?.checked && save && !save.disabled) {
       save.click();
       saved = true;
     }
     return { checked: windows?.checked, saved, publishedDirect };
   })()`);
 
-  if (platformResult.alreadySelected) {
+  if (platformResult.alreadySelected && !changelogChanged) {
     const closed = await evaluate(`(() => {
       const cancel = [...document.querySelectorAll('button')]
         .find((button) => button.innerText.trim() === 'Cancel' && !button.disabled);
@@ -234,7 +248,7 @@ async function publish() {
     `!document.body.innerText.includes('File ID: ${candidate.id}')`,
   ), 60000, 1500);
 
-  if (!platformState.publishedDirect) {
+  if (!candidate.publishDisabled && !platformState.publishedDirect) {
     const publishClicked = await waitFor('кнопка Publish нового файла', async () => evaluate(`(() => {
       const row = [...document.querySelectorAll('tbody tr')].find((item) =>
         item.querySelector('a[href*="/files/${candidate.id}/download"]'));
@@ -272,12 +286,32 @@ async function publish() {
   ), 60000, 3000);
   if (!publicDownload) fail(`Публичная страница не указывает на файл ${candidate.id}.`);
 
+  let savedChangelog = '';
+  if (changelog) {
+    await navigate(adminUrl);
+    await waitFor('обновлённая таблица файлов', async () => evaluate(
+      `document.body.innerText.includes('File manager')`,
+    ), 30000, 1000);
+    await evaluate(`(() => {
+      const row = [...document.querySelectorAll('tbody tr')].find((item) =>
+        item.querySelector('a[href*="/files/${candidate.id}/download"]'));
+      row?.querySelector('svg[data-icon="pencil-alt"]')?.closest('button')?.click();
+    })()`);
+    savedChangelog = await waitFor('сохранённый changelog файла', async () => evaluate(`(() => {
+      const input = [...document.querySelectorAll('textarea')]
+        .find((item) => item.getAttribute('placeholder')?.includes('Enter each change'));
+      return input?.value?.trim() || false;
+    })()`), 30000, 1000);
+    if (savedChangelog !== changelog) fail(`Changelog файла ${candidate.id} не сохранился.`);
+  }
+
   await writeResult({
     ok: true,
     fileId: candidate.id,
     version: candidate.version,
     scan: 'No virus detected',
     platform: 'windows',
+    changelog: savedChangelog,
     live: true,
     publicUrl,
   });
