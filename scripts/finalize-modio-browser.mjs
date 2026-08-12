@@ -175,6 +175,14 @@ async function check() {
         inputVueEvents: Object.keys(input._vei ?? {}),
         labelOwnKeys: Object.keys(input.closest('label') ?? {}),
         labelVueEvents: Object.keys(input.closest('label')?._vei ?? {}),
+        visual: (() => {
+          const rect = input.closest('label')?.querySelector('span')?.getBoundingClientRect();
+          if (!rect) return null;
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          return { x, y, width: rect.width, height: rect.height,
+            hit: document.elementFromPoint(x, y)?.outerHTML ?? '' };
+        })(),
       })),
       buttons: [...document.querySelectorAll('button')].map((button) => ({
         text: button.innerText.trim(),
