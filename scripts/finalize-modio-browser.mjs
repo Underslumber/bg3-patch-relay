@@ -73,6 +73,13 @@ async function navigate(url) {
   await sleep(3000);
 }
 
+async function clickPoint(x, y) {
+  const page = await findPage();
+  if (!page) fail('В CDP не найдена вкладка браузера.');
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
+  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
+}
+
 async function waitFor(description, probe, timeout = timeoutSeconds * 1000, interval = 3000) {
   const deadline = Date.now() + timeout;
   let lastValue;
@@ -204,14 +211,15 @@ async function publish() {
     `document.body.innerText.includes('File ID: ${candidate.id}')`,
   ), 30000, 1000);
 
-  const platformResult = await evaluate(`(() => {
+  const windowsPoint = await evaluate(`(() => {
     const checkboxes = [...document.querySelectorAll('input[type="checkbox"]')];
     const windows = checkboxes.find((input) => input.closest('label')?.innerText.trim() === 'Windows');
     if (!windows) return { ok: false, reason: 'Windows checkbox not found' };
-    if (!windows.checked) windows.closest('label').click();
-    return { ok: true };
+    const rect = windows.closest('label').getBoundingClientRect();
+    return { ok: true, checked: windows.checked, x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   })()`);
-  if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
+  if (!windowsPoint?.ok) fail('Не удалось найти платформу Windows.');
+  if (!windowsPoint.checked) await clickPoint(windowsPoint.x, windowsPoint.y);
 
   const saved = await waitFor('выбранная Windows и кнопка Save', async () => evaluate(`(() => {
     const windows = [...document.querySelectorAll('input[type="checkbox"]')]
