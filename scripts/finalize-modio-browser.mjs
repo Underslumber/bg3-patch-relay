@@ -234,13 +234,18 @@ async function syncProfile() {
     editor.fire('change');
     editor.save();
 
-    const save = [...document.querySelectorAll('button')]
-      .find((button) => button.innerText.trim() === 'Save' && !button.disabled);
-    if (!save) return { ok: false, reason: 'Save button not found' };
-    save.click();
     return { ok: true };
   })()`);
   if (!changed?.ok) fail(`Не удалось заполнить профиль: ${changed?.reason ?? 'unknown error'}.`);
+
+  const saved = await waitFor('активная кнопка сохранения профиля', async () => evaluate(`(() => {
+    const save = [...document.querySelectorAll('button')]
+      .find((button) => button.innerText.trim() === 'Save' && !button.disabled);
+    if (!save) return false;
+    save.click();
+    return true;
+  })()`), 30000, 500);
+  if (!saved) fail('Не удалось сохранить профиль Patch Relay.');
 
   await sleep(3000);
   await navigate(profileAdminUrl);
