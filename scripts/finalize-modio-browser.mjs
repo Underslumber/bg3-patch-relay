@@ -116,7 +116,6 @@ const rowsExpression = `([...document.querySelectorAll('tbody tr')].map((row) =>
     id,
     version: cells[2]?.innerText.trim() ?? '',
     scanOk: Boolean(cells[4]?.querySelector('svg.tw-text-success')),
-    windowsLive: Boolean(cells[5]?.querySelector('svg.tw-text-success:not(.tw-opacity-50)')),
     publishDisabled: Boolean([...row.querySelectorAll('button')]
       .find((button) => button.innerText.trim() === 'Publish')?.disabled),
   } : null;
@@ -141,62 +140,11 @@ async function snapshot() {
 async function check() {
   await openAdmin();
   const rows = await readRows();
-  const candidateFileId = options.get('--candidate-file-id');
-  let candidateForm;
-  if (candidateFileId) {
-    const opened = await evaluate(`(() => {
-      const row = [...document.querySelectorAll('tbody tr')].find((item) =>
-        item.querySelector('a[href*="/files/${candidateFileId}/download"]'));
-      const button = row?.querySelector('svg[data-icon="pencil-alt"]')?.closest('button');
-      if (!button) return false;
-      button.click();
-      return true;
-    })()`);
-    if (!opened) fail(`Не удалось открыть диагностику файла ${candidateFileId}.`);
-    await waitFor('форма диагностики файла', async () => evaluate(
-      `document.body.innerText.includes('File ID: ${candidateFileId}')`,
-    ), 30000, 1000);
-    candidateForm = await evaluate(`({
-      checkboxes: [...document.querySelectorAll('input[type="checkbox"]')].map((input) => ({
-        checked: input.checked,
-        disabled: input.disabled,
-        name: input.name,
-        value: input.value,
-        html: input.outerHTML,
-        labelHtml: input.closest('label')?.outerHTML ?? '',
-        context: input.closest('label')?.innerText.trim()
-          ?? input.parentElement?.parentElement?.innerText.trim()
-          ?? '',
-        reactInputProps: Object.entries(input)
-          .filter(([key]) => key.startsWith('__reactProps'))
-          .flatMap(([, value]) => Object.keys(value ?? {})),
-        reactLabelProps: Object.entries(input.closest('label') ?? {})
-          .filter(([key]) => key.startsWith('__reactProps'))
-          .flatMap(([, value]) => Object.keys(value ?? {})),
-        inputOwnKeys: Object.keys(input),
-        inputVueEvents: Object.keys(input._vei ?? {}),
-        labelOwnKeys: Object.keys(input.closest('label') ?? {}),
-        labelVueEvents: Object.keys(input.closest('label')?._vei ?? {}),
-        visual: (() => {
-          const rect = input.closest('label')?.querySelector('span')?.getBoundingClientRect();
-          if (!rect) return null;
-          const x = rect.left + rect.width / 2;
-          const y = rect.top + rect.height / 2;
-          return { x, y, width: rect.width, height: rect.height,
-            hit: document.elementFromPoint(x, y)?.outerHTML ?? '' };
-        })(),
-      })),
-      buttons: [...document.querySelectorAll('button')].map((button) => ({
-        text: button.innerText.trim(),
-        disabled: button.disabled,
-      })).filter((button) => button.text),
-    })`);
-  }
   await navigate(publicUrl);
   const publicFileIds = await evaluate(`([...document.querySelectorAll('a[href*="/files/"]')]
     .map((link) => (link.href.match(/files\\/(\\d+)/) ?? [])[1])
     .filter(Boolean))`);
-  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows, candidateForm, publicFileIds });
+  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows, publicFileIds });
 }
 
 async function closeAdmin() {
@@ -244,11 +192,9 @@ async function publish() {
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     if (!alreadySelected) windows.focus();
-    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y,
-      hit: document.elementFromPoint(x, y)?.outerHTML ?? '', activeId: document.activeElement?.id ?? '' };
+    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
-  process.stdout.write(`Windows control before click: ${JSON.stringify(platformResult)}\n`);
   if (!platformResult.alreadySelected) await pressSpace();
   await sleep(500);
   const platformState = await evaluate(`(() => {
@@ -268,13 +214,8 @@ async function publish() {
       save.click();
       saved = true;
     }
-    return { checked: windows?.checked, saveDisabled: save?.disabled,
-      saved, publishedDirect, active: document.activeElement?.outerHTML ?? '',
-      buttons: [...document.querySelectorAll('button')].map((button) => ({
-        text: button.innerText.trim(), disabled: button.disabled,
-      })).filter((button) => button.text) };
+    return { checked: windows?.checked, saved, publishedDirect };
   })()`);
-  process.stdout.write(`Windows control after click: ${JSON.stringify(platformState)}\n`);
 
   if (platformResult.alreadySelected) {
     const closed = await evaluate(`(() => {

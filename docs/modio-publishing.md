@@ -8,6 +8,8 @@ Workflow `.github/workflows/publish-modio.yml` публикует Patch Relay ч
 
 После загрузки через Toolkit скрипт `finalize-modio-browser.mjs` работает только со страницей `bg3-underslumber-patch-relay`. Он запоминает старые File ID, находит новый файл требуемой версии, ждёт успешного сканирования, включает Windows и публикует файл. Успех принимается только после подтверждения активной Windows-версии в менеджере файлов и появления нового File ID на публичной странице.
 
+Если Toolkit уже загрузил файл, а финализация прервалась, ручной запуск с `finalize_only=true` и точным `candidate_file_id` завершает публикацию существующего File ID без повторной сборки и загрузки.
+
 ## Требования runner
 
 - Windows x64 runner `BG3-MODIO-PATCH-RELAY` с меткой `patch-relay-toolkit` и интерактивной сессией пользователя `modiorunner`;
