@@ -132,7 +132,11 @@ async function snapshot() {
 async function check() {
   await openAdmin();
   const rows = await readRows();
-  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows });
+  await navigate(publicUrl);
+  const publicFileIds = await evaluate(`([...document.querySelectorAll('a[href*="/files/"]')]
+    .map((link) => (link.href.match(/files\\/(\\d+)/) ?? [])[1])
+    .filter(Boolean))`);
+  await writeResult({ ok: true, adminUrl, fileCount: rows.length, rows, publicFileIds });
 }
 
 async function closeAdmin() {
