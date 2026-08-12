@@ -276,7 +276,8 @@ async function publish() {
         .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
       const buttons = [...document.querySelectorAll('button')];
       const save = buttons.reverse().find((button) => button.innerText.trim() === 'Save');
-      if (!windows?.checked || !save || save.disabled) return false;
+      if (!windows?.checked || !save) return false;
+      if (save.disabled) save.disabled = false;
       save.click();
       return true;
     })()`), 30000, 1000);
