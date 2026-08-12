@@ -153,9 +153,16 @@ async function check() {
         disabled: input.disabled,
         name: input.name,
         value: input.value,
+        html: input.outerHTML,
         context: input.closest('label')?.innerText.trim()
           ?? input.parentElement?.parentElement?.innerText.trim()
           ?? '',
+        reactInputProps: Object.entries(input)
+          .filter(([key]) => key.startsWith('__reactProps'))
+          .flatMap(([, value]) => Object.keys(value ?? {})),
+        reactLabelProps: Object.entries(input.closest('label') ?? {})
+          .filter(([key]) => key.startsWith('__reactProps'))
+          .flatMap(([, value]) => Object.keys(value ?? {})),
       })),
       buttons: [...document.querySelectorAll('button')].map((button) => ({
         text: button.innerText.trim(),
