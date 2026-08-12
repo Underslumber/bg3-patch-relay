@@ -241,10 +241,22 @@ async function publish() {
     const rect = visual.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
-    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y };
+    return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y,
+      hit: document.elementFromPoint(x, y)?.outerHTML ?? '' };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
+  process.stdout.write(`Windows control before click: ${JSON.stringify(platformResult)}\n`);
   if (!platformResult.alreadySelected) await clickPoint(platformResult.x, platformResult.y);
+  await sleep(500);
+  const platformState = await evaluate(`(() => {
+    const windows = [...document.querySelectorAll('input[type="checkbox"]')]
+      .find((input) => input.closest('label')?.innerText.trim() === 'Windows');
+    const save = [...document.querySelectorAll('button')]
+      .reverse().find((button) => button.innerText.trim() === 'Save');
+    return { checked: windows?.checked, saveDisabled: save?.disabled,
+      active: document.activeElement?.outerHTML ?? '' };
+  })()`);
+  process.stdout.write(`Windows control after click: ${JSON.stringify(platformState)}\n`);
 
   if (platformResult.alreadySelected) {
     const closed = await evaluate(`(() => {
