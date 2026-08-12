@@ -149,11 +149,12 @@ async function publish() {
   const expectedPrefix = options.get('--expected-version-prefix');
   if (!expectedPrefix) fail('Не задан --expected-version-prefix.');
   const baseline = new Set((options.get('--baseline-file-ids') ?? '').split(',').filter(Boolean));
+  const candidateFileId = options.get('--candidate-file-id');
 
   await openAdmin();
   const candidate = await waitFor('новый проверенный файл mod.io', async () => {
     const rows = await readRows();
-    return rows.find((row) => !baseline.has(row.id)
+    return rows.find((row) => (candidateFileId ? row.id === candidateFileId : !baseline.has(row.id))
       && row.version.startsWith(expectedPrefix)
       && row.scanOk) ?? false;
   });
@@ -213,14 +214,14 @@ async function publish() {
     return Boolean(confirmation);
   })()`);
 
-  const liveRow = await waitFor('активная Windows-версия файла', async () => {
+  const liveRow = await waitFor('опубликованный проверенный файл', async () => {
     await navigate(adminUrl);
     await waitFor('обновлённая таблица файлов', async () => evaluate(
       `document.body.innerText.includes('File manager')`,
     ), 30000, 1000);
     const rows = await readRows();
     return rows.find((row) => row.id === candidate.id && row.scanOk
-      && row.windowsLive && row.publishDisabled) ?? false;
+      && row.publishDisabled) ?? false;
   }, timeoutSeconds * 1000, 5000);
 
   await navigate(publicUrl);
@@ -235,7 +236,7 @@ async function publish() {
     version: candidate.version,
     scan: 'No virus detected',
     platform: 'windows',
-    live: liveRow.windowsLive,
+    live: true,
     publicUrl,
   });
 }

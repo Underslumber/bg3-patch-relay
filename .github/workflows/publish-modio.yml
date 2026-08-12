@@ -18,6 +18,15 @@ on:
         required: true
         type: boolean
         default: true
+      finalize_only:
+        description: Finalize an already uploaded mod.io File ID without running Toolkit
+        required: true
+        type: boolean
+        default: false
+      candidate_file_id:
+        description: Existing mod.io File ID for finalize_only
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -84,7 +93,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Patch Relay browser session check failed: $LASTEXITCODE" }
 
       - name: Capture current mod.io files
-        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        if: ${{ github.event_name == 'release' || (inputs.validate_only != true && inputs.finalize_only != true) }}
         id: baseline
         run: |
           $ErrorActionPreference = 'Stop'
@@ -94,7 +103,7 @@ jobs:
           "file_ids=$ids" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Connect checkout to BG3 Toolkit
-        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        if: ${{ github.event_name == 'release' || (inputs.validate_only != true && inputs.finalize_only != true) }}
         run: |
           $ErrorActionPreference = 'Stop'
           & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs close-admin `
@@ -103,7 +112,7 @@ jobs:
           & .\scripts\stage-toolkit-project.ps1 -Workspace $env:GITHUB_WORKSPACE
 
       - name: Publish through official Toolkit
-        if: ${{ github.event_name == 'release' || inputs.validate_only != true }}
+        if: ${{ github.event_name == 'release' || (inputs.validate_only != true && inputs.finalize_only != true) }}
         run: |
           $ErrorActionPreference = 'Stop'
           $diagnostics = Join-Path $env:RUNNER_TEMP 'patch-relay-modio-publish.log'
@@ -127,6 +136,7 @@ jobs:
             --slug bg3-underslumber-patch-relay `
             --expected-version-prefix '${{ steps.release.outputs.version_prefix }}' `
             --baseline-file-ids '${{ steps.baseline.outputs.file_ids }}' `
+            --candidate-file-id '${{ inputs.candidate_file_id }}' `
             --timeout-seconds 900 `
             --result $result
           if ($LASTEXITCODE -ne 0) { throw "mod.io finalization failed: $LASTEXITCODE" }
