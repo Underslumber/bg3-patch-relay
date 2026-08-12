@@ -163,6 +163,9 @@ async function profileCheck() {
   await waitFor('профиль Patch Relay', async () => evaluate(
     `location.href.includes('/admin/settings') && document.body.innerText.includes('Mod profile')`,
   ), 60000, 2000);
+  await waitFor('редактор описания Patch Relay', async () => evaluate(
+    `Boolean(globalThis.tinymce?.activeEditor?.initialized)`,
+  ), 60000, 1000);
   const fields = await evaluate(`(() => ({
     inputs: [...document.querySelectorAll('input')].map((input) => ({
       name: input.name, type: input.type, placeholder: input.placeholder,
@@ -184,6 +187,8 @@ async function profileCheck() {
       .filter(Boolean),
     frames: [...document.querySelectorAll('iframe')].map((frame) => ({
       title: frame.title, src: frame.src, className: frame.className,
+      text: frame.contentDocument?.body?.innerText ?? '',
+      html: frame.contentDocument?.body?.innerHTML ?? '',
     })),
     roleTextboxes: [...document.querySelectorAll('[role="textbox"]')].map((input) => ({
       tagName: input.tagName, ariaLabel: input.getAttribute('aria-label'),
@@ -192,6 +197,78 @@ async function profileCheck() {
     })),
   }))()`);
   await writeResult({ ok: true, profileAdminUrl, fields });
+}
+
+async function syncProfile() {
+  const profileFile = options.get('--profile-file');
+  if (!profileFile) fail('Не задан --profile-file.');
+  const profile = JSON.parse(fs.readFileSync(profileFile, 'utf8'));
+  const summary = profile.summary?.trim();
+  const descriptionHtml = profile.descriptionHtml?.trim();
+  if (!summary || !descriptionHtml) fail('В профиле нужны summary и descriptionHtml.');
+  if (summary.length > 250) fail(`Summary длиннее 250 символов: ${summary.length}.`);
+
+  await navigate(profileAdminUrl);
+  await waitFor('профиль Patch Relay', async () => evaluate(
+    `location.href.includes('/admin/settings') && document.body.innerText.includes('Mod profile')`,
+  ), 60000, 2000);
+  await waitFor('редактор описания Patch Relay', async () => evaluate(
+    `Boolean(globalThis.tinymce?.activeEditor?.initialized)`,
+  ), 60000, 1000);
+
+  const changed = await evaluate(`(() => {
+    const requestedSummary = ${JSON.stringify(summary)};
+    const requestedDescription = ${JSON.stringify(descriptionHtml)};
+    const summaryInput = [...document.querySelectorAll('textarea')]
+      .find((input) => input.placeholder?.includes('Tell us about the changes'));
+    const editor = globalThis.tinymce?.activeEditor;
+    if (!summaryInput) return { ok: false, reason: 'Summary textarea not found' };
+    if (!editor) return { ok: false, reason: 'TinyMCE editor not found' };
+
+    const textareaSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')?.set;
+    textareaSetter?.call(summaryInput, requestedSummary);
+    summaryInput.dispatchEvent(new Event('input', { bubbles: true }));
+    summaryInput.dispatchEvent(new Event('change', { bubbles: true }));
+    editor.setContent(requestedDescription);
+    editor.fire('input');
+    editor.fire('change');
+    editor.save();
+
+    const save = [...document.querySelectorAll('button')]
+      .find((button) => button.innerText.trim() === 'Save' && !button.disabled);
+    if (!save) return { ok: false, reason: 'Save button not found' };
+    save.click();
+    return { ok: true };
+  })()`);
+  if (!changed?.ok) fail(`Не удалось заполнить профиль: ${changed?.reason ?? 'unknown error'}.`);
+
+  await sleep(3000);
+  await navigate(profileAdminUrl);
+  await waitFor('сохранённый профиль Patch Relay', async () => evaluate(`(() => {
+    const expectedSummary = ${JSON.stringify(summary)};
+    const summaryInput = [...document.querySelectorAll('textarea')]
+      .find((input) => input.placeholder?.includes('Tell us about the changes'));
+    const editor = globalThis.tinymce?.activeEditor;
+    const descriptionText = editor?.getContent({ format: 'text' }) ?? '';
+    return summaryInput?.value === expectedSummary
+      && descriptionText.includes('Aligns item mechanics, status durations, conditions and resource formulas')
+      && descriptionText.includes('Full patch list, affected versions and source details');
+  })()`), 60000, 2000);
+
+  await navigate(publicUrl);
+  const publicText = await waitFor('обновлённое описание на публичной странице', async () => evaluate(`(() => {
+    const body = document.body.innerText;
+    const summaryProbe = ${JSON.stringify(summary.slice(0, 80))};
+    const descriptionProbe = 'Aligns item mechanics, status durations, conditions and resource formulas';
+    return body.includes(summaryProbe) && body.includes(descriptionProbe) ? body : false;
+  })()`), 60000, 3000);
+  await writeResult({
+    ok: true,
+    profileAdminUrl,
+    publicUrl,
+    summary,
+    descriptionVerified: publicText.includes('Full patch list, affected versions and source details'),
+  });
 }
 
 async function publish() {
@@ -359,8 +436,8 @@ async function publish() {
   });
 }
 
-if (!['check', 'snapshot', 'close-admin', 'profile-check', 'publish'].includes(command)) {
-  fail('Команда должна быть check, snapshot, close-admin, profile-check или publish.');
+if (!['check', 'snapshot', 'close-admin', 'profile-check', 'profile-sync', 'publish'].includes(command)) {
+  fail('Команда должна быть check, snapshot, close-admin, profile-check, profile-sync или publish.');
 }
 
 try {
@@ -368,6 +445,7 @@ try {
   if (command === 'snapshot') await snapshot();
   if (command === 'close-admin') await closeAdmin();
   if (command === 'profile-check') await profileCheck();
+  if (command === 'profile-sync') await syncProfile();
   if (command === 'publish') await publish();
 } catch (error) {
   console.error(error.stack ?? error.message);

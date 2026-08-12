@@ -36,6 +36,11 @@ on:
         required: true
         type: boolean
         default: false
+      sync_profile:
+        description: Update the mod.io summary and description from docs/modio-profile.json
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -110,6 +115,16 @@ jobs:
             --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-profile.json')
           if ($LASTEXITCODE -ne 0) { throw "Could not inspect the mod.io profile: $LASTEXITCODE" }
 
+      - name: Sync mod.io profile
+        if: ${{ inputs.sync_profile == true }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & $env:MODIO_CDP_NODE --experimental-websocket .\scripts\finalize-modio-browser.mjs profile-sync `
+            --slug bg3-underslumber-patch-relay `
+            --profile-file .\docs\modio-profile.json `
+            --result (Join-Path $env:RUNNER_TEMP 'patch-relay-modio-profile-sync.json')
+          if ($LASTEXITCODE -ne 0) { throw "Could not sync the mod.io profile: $LASTEXITCODE" }
+
       - name: Capture current mod.io files
         if: ${{ github.event_name == 'release' || (inputs.validate_only != true && inputs.finalize_only != true) }}
         id: baseline
@@ -175,4 +190,5 @@ jobs:
             ${{ runner.temp }}/patch-relay-modio-publish.log
             ${{ runner.temp }}/patch-relay-modio-result.json
             ${{ runner.temp }}/patch-relay-modio-profile.json
+            ${{ runner.temp }}/patch-relay-modio-profile-sync.json
             ${{ runner.temp }}/bg3-toolkit-publish-diagnostics/**
