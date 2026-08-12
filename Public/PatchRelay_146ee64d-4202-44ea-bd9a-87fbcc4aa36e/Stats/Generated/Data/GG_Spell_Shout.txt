@@ -1,0 +1,4 @@
+new entry "Shout_GG_Three_PoisonAura"
+type "SpellData"
+using "Shout_GG_Three_PoisonAura"
+data "SpellSuccess" "AOE:IF(not SavingThrow(Ability.Constitution, 14)):DealDamage(4d6, Poison)"

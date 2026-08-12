@@ -1,0 +1,4 @@
+new entry "SS_AstralConduit_Text"
+type "PassiveData"
+using "SS_AstralConduit_Text"
+data "Boosts" "WeaponAttackRollAbilityOverride(SpellCastingAbility)"

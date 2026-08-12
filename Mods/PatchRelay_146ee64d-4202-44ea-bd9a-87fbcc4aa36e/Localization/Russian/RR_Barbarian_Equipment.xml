@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h8d32f6b2g3ee5g45c1gacb7gebb38311b016" version="1">Когда вы попадаете по существу этим оружием, оно должно успешно пройти &lt;LSTag Tooltip="SavingThrow"&gt;испытание&lt;/LSTag&gt; Ловкости, иначе будет &lt;LSTag Type="Status" Tooltip="PRONE"&gt;сбито с ног&lt;/LSTag&gt;.</content>
+  <content contentuid="h8d32f6b2g3ee5g45c1gacb7gebb38311b067" version="1">Рог пробуждает в вас божественную кровь. Пока вы находитесь в &lt;LSTag Type="Status" Tooltip="RAGE"&gt;ярости&lt;/LSTag&gt;, максимум ваших &lt;LSTag Tooltip="HitPoints"&gt;ОЗ&lt;/LSTag&gt; увеличивается на [1] за каждый уровень варвара.</content>
+</contentList>

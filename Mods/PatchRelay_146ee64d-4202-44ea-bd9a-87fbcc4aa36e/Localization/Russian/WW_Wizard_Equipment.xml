@@ -4,4 +4,5 @@
   <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab89" version="1">Когда носитель наносит урон &lt;LSTag Type="Spell" Tooltip="Projectile_Fireball"&gt;Огненным шаром&lt;/LSTag&gt; или &lt;LSTag Type="Spell" Tooltip="Target_Firebolt"&gt;Огненным снарядом&lt;/LSTag&gt;, цель получает &lt;LSTag Type="Status" Tooltip="BURNING"&gt;Горение&lt;/LSTag&gt; на [1] ход.</content>
   <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab90" version="1">Призматическое эхо</content>
   <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab91" version="1">Когда носитель сотворяет &lt;LSTag Type="Spell" Tooltip="Projectile_ChromaticOrb"&gt;Хроматический шар&lt;/LSTag&gt;, заклинание наносит дополнительно [1] урона. Созданные заклинанием поверхности также наносят дополнительно [1] урона.</content>
+  <content contentuid="h941a2a1agcc5ag4161gb947g4797cc56ab80" version="1">Высвободите разрушительную волну силовой энергии, уничтожив себя и нанеся [1] всем существам в радиусе [2]. После достижения 12-го уровня урон увеличивается до [3].</content>
 </contentList>

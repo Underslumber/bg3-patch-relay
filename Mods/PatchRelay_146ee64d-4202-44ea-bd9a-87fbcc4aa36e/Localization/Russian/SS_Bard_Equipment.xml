@@ -4,4 +4,5 @@
   <content contentuid="hdf5efdf7g51abg4d28g9ea7g5173ebe8dd116" version="1">Когда вы накладываете на цель &lt;LSTag Type="Status" Tooltip="CHARMED"&gt;Обворожение&lt;/LSTag&gt; или &lt;LSTag Type="Status" Tooltip="FRIGHTENED"&gt;Испуг&lt;/LSTag&gt;, она также оказывается &lt;LSTag Type="Status" Tooltip="SS_AWESTRUCK"&gt;потрясена талантом&lt;/LSTag&gt; на [1] хода.</content>
   <content contentuid="hdf5efdf7g51abg4d28g9ea7g5173ebe8dd117" version="1">Потрясён талантом</content>
   <content contentuid="hdf5efdf7g51abg4d28g9ea7g5173ebe8dd118" version="1">Вы настолько впечатлены невероятным талантом, что на мгновение теряете сосредоточенность. Вы получаете штраф -[1] к &lt;LSTag Tooltip="SavingThrow"&gt;испытаниям&lt;/LSTag&gt;.</content>
+  <content contentuid="hdf5efdf7g51abg4d28g9ea7g5173ebe8dd80" version="1">Для &lt;LSTag Tooltip="AttackRoll"&gt;бросков атаки&lt;/LSTag&gt; этим оружием вы используете &lt;LSTag Tooltip="SpellcastingAbilityModifier"&gt;модификатор заклинательной способности&lt;/LSTag&gt; вместо модификатора Ловкости.</content>
 </contentList>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contentList>
+  <content contentuid="h22892942gd938g469dg96bag67bafebbd010" version="1">Атаки этим оружием с вероятностью [1] % накладывают на цель &lt;LSTag Type="Status" Tooltip="MM_WEAKENED_DEFENSES"&gt;Ослабленную защиту&lt;/LSTag&gt; до конца её хода.</content>
+  <content contentuid="h22892942gd938g469dg96bag67bafebbd039" version="1">Атаки этим оружием с вероятностью [1] % накладывают на цель &lt;LSTag Type="Status" Tooltip="MM_RENDING_SHADOW"&gt;Теневой разрыв&lt;/LSTag&gt; на [2] хода.</content>
+  <content contentuid="h22892942gd938g469dg96bag67bafebbd050" version="1">Ваши &lt;LSTag Tooltip="MeleeWeaponAttack"&gt;атаки оружием ближнего боя&lt;/LSTag&gt; с вероятностью [2] % немедленно вызывают дополнительную атаку оружием ближнего боя.</content>
+  <content contentuid="h22892942gd938g469dg96bag67bafebbd075" version="1">Атаки этим оружием с вероятностью [1] % накладывают на цель &lt;LSTag Type="Status" Tooltip="MM_SUNDERED"&gt;Разрыв&lt;/LSTag&gt; на [2] хода.</content>
+  <content contentuid="h22892942gd938g469dg96bag67bafebbd102" version="1">Один раз за бой, когда вы получаете урон, имея менее 30 % &lt;LSTag Tooltip="HitPoints"&gt;ОЗ&lt;/LSTag&gt;, вы восстанавливаете 20 % максимума &lt;LSTag Tooltip="HitPoints"&gt;ОЗ&lt;/LSTag&gt; и получаете бонус +[1] к &lt;LSTag Tooltip="ArmourClass"&gt;классу брони&lt;/LSTag&gt; на 2 хода.</content>
+</contentList>

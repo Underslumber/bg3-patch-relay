@@ -7,4 +7,9 @@
   <content contentuid="h70a2e3bec2fa4d3c82c0307df6ca1190" version="1">Древнее возмездие</content>
   <content contentuid="h262ebddbac4a47368ae609bf91c82478" version="1">Если существо попадает по вам атакой ближнего боя, оно получает [1]. (Раз в ход.)</content>
   <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b022" version="1">Когда вы сотворяете заклинание 1-го круга или выше, вы восстанавливаете &lt;LSTag Tooltip="HitPoints"&gt;ОЗ&lt;/LSTag&gt; в количестве, равном кругу использованной &lt;LSTag Tooltip="SpellSlot"&gt;ячейки заклинания&lt;/LSTag&gt;.</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b064" version="1">Мгновенно восстановите количество &lt;LSTag Type="ActionResource" Tooltip="SorceryPoint"&gt;очков колдовства&lt;/LSTag&gt;, равное половине вашего уровня чародея + 1. (Один раз за &lt;LSTag Tooltip="LongRest"&gt;долгий отдых&lt;/LSTag&gt;.)</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b067" version="1">В начале боя результат броска урона первого применённого вами заклинания не может быть ниже 18.</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b070" version="1">Пока активна метамагия, вы можете применить 1 заклинание в этот ход, не расходуя &lt;LSTag Type="ActionResource" Tooltip="SorceryPoint"&gt;очки колдовства&lt;/LSTag&gt;. (Один раз за бой.)</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b085" version="1">Пока у вас остаётся не менее [1] неиспользованных &lt;LSTag Type="ActionResource" Tooltip="SorceryPoint"&gt;очков колдовства&lt;/LSTag&gt;, вы получаете бонус +[2] к &lt;LSTag Tooltip="ArmourClass"&gt;классу брони&lt;/LSTag&gt;.</content>
+  <content contentuid="h27ad4a5fg8ebeg4b8egb71dg81a7d073b086" version="1">Ваш &lt;LSTag Tooltip="ArmourClass"&gt;класс брони&lt;/LSTag&gt; увеличивается на +[1], пока у вас есть не менее [2] &lt;LSTag Type="ActionResource" Tooltip="SorceryPoint"&gt;очков колдовства&lt;/LSTag&gt;.</content>
 </contentList>

@@ -2,4 +2,7 @@
 <contentList>
   <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f118" version="1">Острие сглаза</content>
   <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f119" version="1">Когда носитель наносит урон существу под действием &lt;LSTag Type="Spell" Tooltip="Target_Hex"&gt;Сглаза&lt;/LSTag&gt;, значение, необходимое для &lt;LSTag Tooltip="CriticalHit"&gt;критического удара&lt;/LSTag&gt; по этому существу, уменьшается на [1]. Эффект суммируется.</content>
+  <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f012" version="1">Создайте на 10 ходов 3 эха, укрепляющих вашу защиту: пока они активны, вы получаете бонус +[1] к &lt;LSTag Tooltip="ArmourClass"&gt;классу брони&lt;/LSTag&gt; и &lt;LSTag Tooltip="Resistance"&gt;устойчивость&lt;/LSTag&gt; к силовому урону. Каждый раз, когда вы успешно уклоняетесь от атаки, одно эхо исчезает.</content>
+  <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f048" version="1">Когда враг попадает по вам, вы можете применить &lt;LSTag Type="Spell" Tooltip="Target_HellishRebuke_3"&gt;Адское возмездие&lt;/LSTag&gt; 3-го круга. (Один раз за &lt;LSTag Tooltip="LongRest"&gt;долгий отдых&lt;/LSTag&gt;.)</content>
+  <content contentuid="ha6cae9a4g3186g4872gaac9g04ef68e7f064" version="1">Когда ваши ОЗ опускаются ниже 40 %, вы высвобождаете волну некротической энергии в радиусе [1], нанося [2]. Союзники получают половину урона. (Один раз за &lt;LSTag Tooltip="ShortRest"&gt;короткий привал&lt;/LSTag&gt;.)</content>
 </contentList>

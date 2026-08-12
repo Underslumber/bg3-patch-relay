@@ -24,9 +24,11 @@ The table is a table of contents: one row per patch, the details live in a separ
 | ⚔️ [Pact weapon outside the slot](docs/patches/dnd55e-pact-weapon.md) | 📦 [DnD 5.5e All-in-One BEYOND](#-affected-mods) | 💡 The pact bond survives moving the weapon into the inventory: a Lua handler restores the removed `PACT_BLADE*` statuses |
 | 🎲 [Void capsules: reward and extended pools](docs/patches/ancient-mega-pack-void-capsule.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Fixes the empty reward and automatically tops up the stock pools with gear from active mods by rarity, slot and theme |
 | 🎩 [Eternal Echo on the very rare hat](docs/patches/ancient-mega-pack-eternal-echo.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Raises the actual bonus damage from ×1 to the advertised ×1.5 Intelligence modifier |
+| 🔨 [Rare mace stun duration](docs/patches/ancient-mega-pack-mace-stun.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Makes the rare and very rare maces stun for their advertised 2 and 3 turns |
 | 💠 [Two versions of the Arcane Augmentation Pendant](docs/patches/xfed-arcane-augmentation-pendant.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Fixes the Russian descriptions of the very rare version and adds a separate legendary capstone to xFED world loot and to legendary capsules |
-| 📝 [xFED Russian localization](docs/patches/xfed-russian-localization.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Adds 23 missing strings and fixes 4 descriptions that disagreed with the item mechanics |
-| 🏺 [Ancient Mega Pack Russian localization](docs/patches/ancient-mega-pack-russian-localization.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Adds 2 missing player-facing strings and updates the stale Arcanizer description |
+| ⚙️ [Missing xFED item mechanics](docs/patches/xfed-missing-item-mechanics.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Implements the Starsong Blade ability override, javelin return and the spore aura saving throw |
+| 📝 [xFED Russian localization](docs/patches/xfed-russian-localization.md) | 📦 [Fade's Equipment Distribution AIO](#-affected-mods) | 💡 Adds 23 missing strings and fixes 35 descriptions that disagreed with the item mechanics |
+| 🏺 [Ancient Mega Pack descriptions](docs/patches/ancient-mega-pack-russian-localization.md) | 📦 [Ancient Mega Pack](#-affected-mods) | 💡 Fixes English and Russian descriptions for the Disintegrator, pendant and 40 weapon variants |
 
 ### 🗑️ Removed
 

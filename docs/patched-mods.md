@@ -25,7 +25,7 @@
 | PublishHandle | `4474487` |
 | Страница мода | https://mod.io/g/baldursgate3/m/ancient-mega-pack-rel |
 | Исходники | Публичный репозиторий не указан; базис берётся из распакованного установленного `.pak` |
-| Локальная копия | `D:/Projects/BG3_Mods/work/ancient_current/` |
+| Локальная копия | `D:/Projects/BG3_Mods/work/audit_installed_20260812/ancient/` — свежая распаковка установленного `.pak` |
 | Где искать оригинал записи | Капсулы: `Mods/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Story/RawFiles/Goals/ZZ_AMP_VoidCapsule_*.txt`; предметы: `Public/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Stats/Generated/Data/`; локализация: `Mods/REL_Full_Ancient_c6c0d2bd-6198-de9e-30ad-e8cda1793025/Localization/{English,Russian}/` — пути зеркалят наши |
 
 ## Fade's Equipment Distribution AIO
@@ -37,5 +37,5 @@
 | PublishHandle | `4918115` |
 | Страница мода | https://mod.io/g/baldursgate3/m/fades-equipment-distribution-aio |
 | Исходники | Публичный репозиторий не указан; базис берётся из распакованного установленного `.pak` |
-| Локальная копия | `D:/Projects/BG3_Mods/work/xfed_live_1_0_0_20/` |
+| Локальная копия | `D:/Projects/BG3_Mods/work/audit_installed_20260812/xfed/` — свежая распаковка установленного `.pak` |
 | Где искать оригинал записи | Статы: `Public/xFED_AIO_af330e86-7335-b20c-ce70-6df8539d4597/Stats/Generated/Data/`; шаблон: `Public/…/RootTemplates/_merged.lsx`; тексты: `Mods/…/Localization/{English,Russian}/`; мировая легендарная добыча: `Mods/…/Story/RawFiles/Goals/FED_Randomizer.txt` |

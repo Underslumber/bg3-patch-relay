@@ -1,0 +1,9 @@
+new entry "Target_Mace_r"
+type "SpellData"
+using "Target_Mace_r"
+data "SpellSuccess" "IF(not SavingThrow(Ability.Constitution, ManeuverSaveDC()+1)):ApplyStatus(STUNNED,100,2); DealDamage(MainMeleeWeapon, MainMeleeWeaponDamageType); ExecuteWeaponFunctors(MainHand)"
+
+new entry "Target_Mace_e"
+type "SpellData"
+using "Target_Mace_e"
+data "SpellSuccess" "IF(not SavingThrow(Ability.Constitution, ManeuverSaveDC()+2)):ApplyStatus(STUNNED,100,3); DealDamage(MainMeleeWeapon, MainMeleeWeaponDamageType); ExecuteWeaponFunctors(MainHand)"
