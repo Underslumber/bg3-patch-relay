@@ -247,18 +247,46 @@ async function syncProfile() {
   })()`), 30000, 500);
   if (!saved) fail('Не удалось сохранить профиль Patch Relay.');
 
-  await sleep(3000);
+  await waitFor('завершение сохранения профиля', async () => evaluate(`(() => {
+    const save = [...document.querySelectorAll('button')]
+      .find((button) => button.innerText.trim() === 'Save');
+    return Boolean(save?.disabled);
+  })()`), 60000, 1000);
+  const saveState = await evaluate(`(() => ({
+    alerts: [...document.querySelectorAll('[role="alert"], .tw-text-danger')]
+      .map((item) => item.innerText.trim()).filter(Boolean),
+    invalid: [...document.querySelectorAll(':invalid')].map((input) => ({
+      tagName: input.tagName, type: input.type, placeholder: input.placeholder,
+      label: input.closest('label')?.innerText.trim() ?? '',
+      validationMessage: input.validationMessage,
+    })),
+    radios: [...document.querySelectorAll('input[type="radio"]')].map((input) => ({
+      checked: input.checked,
+      label: input.closest('label')?.innerText.trim() ?? input.parentElement?.innerText?.trim() ?? '',
+    })),
+  }))()`);
   await navigate(profileAdminUrl);
-  await waitFor('сохранённый профиль Patch Relay', async () => evaluate(`(() => {
+  await waitFor('перезагруженный редактор описания Patch Relay', async () => evaluate(
+    `Boolean(globalThis.tinymce?.activeEditor?.initialized)`,
+  ), 60000, 1000);
+  const persisted = await evaluate(`(() => {
     const expectedSummary = ${JSON.stringify(summary)};
     const summaryInput = [...document.querySelectorAll('textarea')]
       .find((input) => input.placeholder?.includes('Tell us about the changes'));
     const editor = globalThis.tinymce?.activeEditor;
     const descriptionText = editor?.getContent({ format: 'text' }) ?? '';
-    return summaryInput?.value === expectedSummary
-      && descriptionText.includes('Aligns item mechanics, status durations, conditions and resource formulas')
-      && descriptionText.includes('Full patch list, affected versions and source details');
-  })()`), 60000, 2000);
+    return {
+      ok: summaryInput?.value === expectedSummary
+        && descriptionText.includes('Aligns item mechanics, status durations, conditions and resource formulas')
+        && descriptionText.includes('Full patch list, affected versions and source details'),
+      summary: summaryInput?.value ?? '',
+      descriptionText,
+    };
+  })()`);
+  if (!persisted.ok) {
+    await writeResult({ ok: false, profileAdminUrl, publicUrl, saveState, persisted });
+    return;
+  }
 
   await navigate(publicUrl);
   const publicText = await waitFor('обновлённое описание на публичной странице', async () => evaluate(`(() => {
