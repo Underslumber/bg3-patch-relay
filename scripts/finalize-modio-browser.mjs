@@ -26,7 +26,8 @@ async function getPages() {
 
 async function findPage() {
   const pages = await getPages();
-  return pages.find((page) => page.type === 'page' && page.url.includes(slug))
+  return pages.find((page) => page.type === 'page' && page.url.includes(slug) && page.url.includes('/admin/settings'))
+    ?? pages.find((page) => page.type === 'page' && page.url.includes(slug))
     ?? pages.find((page) => page.type === 'page');
 }
 
@@ -73,11 +74,12 @@ async function navigate(url) {
   await sleep(3000);
 }
 
-async function clickPoint(x, y) {
+async function pressSpace() {
   const page = await findPage();
   if (!page) fail('В CDP не найдена вкладка браузера.');
-  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 });
-  await cdp(page, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 });
+  const key = { key: ' ', code: 'Space', windowsVirtualKeyCode: 32, nativeVirtualKeyCode: 32 };
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyDown', ...key });
+  await cdp(page, 'Input.dispatchKeyEvent', { type: 'keyUp', ...key });
 }
 
 async function waitFor(description, probe, timeout = timeoutSeconds * 1000, interval = 3000) {
@@ -241,12 +243,13 @@ async function publish() {
     const rect = visual.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
+    if (!alreadySelected) windows.focus();
     return { ok: Boolean(document.elementFromPoint(x, y)), alreadySelected, x, y,
-      hit: document.elementFromPoint(x, y)?.outerHTML ?? '' };
+      hit: document.elementFromPoint(x, y)?.outerHTML ?? '', activeId: document.activeElement?.id ?? '' };
   })()`);
   if (!platformResult?.ok) fail('Не удалось выбрать платформу Windows.');
   process.stdout.write(`Windows control before click: ${JSON.stringify(platformResult)}\n`);
-  if (!platformResult.alreadySelected) await clickPoint(platformResult.x, platformResult.y);
+  if (!platformResult.alreadySelected) await pressSpace();
   await sleep(500);
   const platformState = await evaluate(`(() => {
     const windows = [...document.querySelectorAll('input[type="checkbox"]')]
